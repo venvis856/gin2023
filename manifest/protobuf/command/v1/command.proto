@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "/command/v1";
+
+message SendCommandReq{
+  string TrackId =1;
+  string MsgId =2;
+  string Command=3;
+  string DeviceNo=4;
+}
+
+message SendCommandRes{
+  int32 Code = 1;
+  string Data = 2;
+  string Msg =3;
+  string TrackId =4;
+}
+
+message GetCommandReq{
+  string TrackId =1;
+  string MsgId =2;
+  string DeviceNo=3;
+}
+
+message GetCommandRes{
+  string TrackId =1;
+  string MsgId =2;
+  string Result =3;
+}
+
+service CommandRpc{
+  rpc SendCommand(SendCommandReq) returns(SendCommandRes);
+  rpc GetCommand(GetCommandReq) returns(GetCommandRes);
+}

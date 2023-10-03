@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option go_package = "/searchImg/v2";
+
+message SearchReq{
+    int64 Limit=1;
+    string ImgUrl=2;
+    string MsgId=3;
+    repeated string DeviceNos=4;
+    string TrackId =5;
+}
+
+message SendSearchImgMsgRes {
+    int32 Code = 1;
+    string Data = 2;
+    string Msg =3;
+    string TrackId =4;
+}
+
+message GetSearchReq{
+    string MsgId =1;
+    string TrackId =2;
+}
+
+message GetSearchRes{
+    map<string,DeviceBody> Data =1;
+    string TrackId =2;
+}
+
+message DeviceBody{
+     string DeviceId=1;
+     repeated  CameraBody result=2;
+}
+
+message CameraBody{
+   string Camid =1;
+   repeated Video Videos=2;
+}
+
+message Video{
+    string date=1;
+    double distance=2;
+    string imgurl=3;
+    string matchimg=4;
+    string matchvideo=5;
+    int64  seek=6;
+}
+
+service SearchImgPrc{
+    rpc SearchImg(SearchReq) returns (SendSearchImgMsgRes);
+    rpc GetSearchImg(GetSearchReq) returns (GetSearchRes);
+}

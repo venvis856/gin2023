@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "/alarm/v2";
+
+message SendMsgReq {
+    string ImgUrl =1;
+    string CameraNo=2;
+    string StartTime=3;
+    string EndTime=4;
+    repeated int32 Point = 5;
+    int32 AlarmType=6;
+    int32 Threshold=7;
+    repeated string DeviceNo=8;
+    string MsgId=9;
+    string TrackId =10;
+}
+
+message SendMsgRes {
+    int32 Code = 1;
+    string Data = 2;
+    string Msg =3;
+    string TrackId = 4;
+}
+
+service AlarmRpc{
+    rpc Alarm(SendMsgReq) returns (SendMsgRes);
+}

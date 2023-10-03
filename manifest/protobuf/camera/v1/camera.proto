@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option go_package = "/camera/v2";
+//import "google/protobuf/any.proto";
+//import "google/protobuf/struct.proto";
+//import "google/protobuf/timestamp.proto";
+//import "google/protobuf/duration.proto";
+
+message CameraReq {
+  string CameraNo=1;
+  string DeviceNo=2;
+  string MsgId=3;
+  string TrackId =4;
+}
+
+message CameraGetRsReq{
+  string MsgId=1;
+  string TrackId =2;
+}
+
+message ResMsg {
+  int32 Code = 1;
+  string Data = 2;
+  string Msg =3;
+  string TrackId =4;
+}
+
+message NullMsg{
+  string TrackId =1;
+}
+
+message SnapRes{
+  string CameraNo =1;
+  string SnapUrl=2;
+  string TrackId =3;
+}
+
+message OnlineValue {
+  string DeviceNo = 1;
+  string CameraNo =2 ;
+  string InsertDate = 3;
+  string InsertTime = 4;
+  string LastUpdateDate=5;
+  string LastUpdateTime = 6;
+  string StartTime = 7;
+}
+
+message OnlineCameraRes{
+  map<string,OnlineValue> Data =1;
+  string TrackId =2;
+}
+
+message OnlineDeviceRes{
+  map<string,OnlineValue> Data =1;
+  string TrackId =2;
+}
+
+service CameraRpc{
+  rpc GetCameraSnap(CameraReq) returns (ResMsg);
+  rpc GetCameraSnapResult(CameraGetRsReq) returns (SnapRes);
+  rpc GetAllOnlineCamera(NullMsg) returns (OnlineCameraRes);
+  rpc GetAllOnlineDevice(NullMsg) returns (OnlineDeviceRes);
+}

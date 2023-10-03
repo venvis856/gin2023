@@ -1,0 +1,8 @@
+# 是否监听vendor文件夹下的文件改变
+vendor_watch: false
+
+# 不需要监听的目录名字
+excluded_paths:
+  - release
+  - public
+  - logs
