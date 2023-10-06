@@ -1,7 +1,7 @@
 package handler
 
 import (
-	v1 "gin/api/select/v1"
+	"gin/api/admin/select/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
 	"gin/internal/global/response"

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gin/api/role/v1"
+	"gin/api/admin/role/v1"
 	"gin/internal/library/handlePanic"
 )
 

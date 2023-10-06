@@ -2,7 +2,7 @@ package user
 
 import (
 	"encoding/json"
-	v1 "gin/api/user/v1"
+	"gin/api/admin/user/v1"
 	"gin/internal/config"
 	"gin/internal/global"
 	"gin/internal/library/jwt"

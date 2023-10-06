@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gin/api/permission/v1"
+	"gin/api/admin/permission/v1"
 	"gin/internal/library/handlePanic"
 	"github.com/gin-gonic/gin"
 )

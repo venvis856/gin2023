@@ -1,4 +1,3 @@
-
 CREATE TABLE `identify`
 (
     `id`                 int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -51,7 +50,7 @@ CREATE TABLE `table_ids`
     `id`          int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `table_name`  varchar(50) NOT NULL COMMENT '表名',
     `identify_id` int(11) NOT NULL COMMENT '身份id',
-    `max_id`      int(11) unsigned NOT NUL L DEFAULT 0 COMMENT '最大id',
+    `max_id`      int(11) unsigned NOT NULL DEFAULT 0 COMMENT '最大id',
     PRIMARY KEY (`id`) USING BTREE,
     KEY           `lianhe` (`table_name`,`identify_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COMMENT='虚拟id表';

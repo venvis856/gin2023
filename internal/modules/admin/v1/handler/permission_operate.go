@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	v1 "gin/api/permissionOperate/v1"
+	"gin/api/admin/permissionOperate/v1"
 	"gin/internal/global/errcode"
 	"gin/internal/global/response"
 	"gin/internal/modules/admin/v1/logic/permission_operate"

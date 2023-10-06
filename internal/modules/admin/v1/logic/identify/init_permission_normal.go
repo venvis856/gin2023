@@ -8,11 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type System struct{}
+type Normal struct {
+}
 
-func (receiver *System) InitPermission(identifyId int64, roleId int64, tx *gorm.DB) error {
+func (a *Normal) InitPermission(identifyId int64, roleId int64, tx *gorm.DB) error {
 	permissions := []*models.Permission{
-		{PermissionName: "运营管理系统", PermissionCode: "web_system", FatherPermissionCode: "", IdentifyId: identifyId, Type: models.TYPE_MENU, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
+		{PermissionName: "后台", PermissionCode: "web_system", FatherPermissionCode: "", IdentifyId: identifyId, Type: models.TYPE_MENU, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
 
 		// 角色列表
 		{PermissionName: "角色列表", PermissionCode: "web_role_list", FatherPermissionCode: "web_system", IdentifyId: identifyId, Type: models.TYPE_MENU, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
@@ -28,13 +29,6 @@ func (receiver *System) InitPermission(identifyId int64, roleId int64, tx *gorm.
 		{PermissionName: "用户新增", PermissionCode: "web_user_add", FatherPermissionCode: "web_user_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
 		{PermissionName: "用户修改", PermissionCode: "web_user_update", FatherPermissionCode: "web_user_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
 		{PermissionName: "用户删除", PermissionCode: "web_user_delete", FatherPermissionCode: "web_user_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
-
-		// 身份列表
-		{PermissionName: "标识列表", PermissionCode: "web_identity_list", FatherPermissionCode: "web_system", IdentifyId: identifyId, Type: models.TYPE_MENU, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
-		{PermissionName: "标识详情", PermissionCode: "web_identity_info", FatherPermissionCode: "web_identity_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
-		{PermissionName: "标识新增", PermissionCode: "web_identity_add", FatherPermissionCode: "web_identity_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
-		{PermissionName: "标识修改", PermissionCode: "web_identity_update", FatherPermissionCode: "web_identity_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
-		{PermissionName: "标识删除", PermissionCode: "web_identity_delete", FatherPermissionCode: "web_identity_list", IdentifyId: identifyId, Type: models.TYPE_NORMAL, Scene: models.SCENE_WEB, Status: 1, CreateTime: carbon.Now().Timestamp()},
 	}
 
 	if tx == nil {
@@ -53,7 +47,6 @@ func (receiver *System) InitPermission(identifyId int64, roleId int64, tx *gorm.
 		codes = append(codes, v.PermissionCode)
 	}
 	if err := permission_operate.RoleAddPermission(roleId, codes, identifyId); err != nil {
-		//global.Response.Json(c, global.HTTP_SUCCESS, global.ERROR, err.Error(), "")
 		tx.Rollback()
 		return err
 	}

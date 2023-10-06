@@ -3,7 +3,7 @@ package identify
 import (
 	"encoding/json"
 	"errors"
-	"gin/api/identify/v1"
+	"gin/api/admin/identify/v1"
 	"gin/internal/config"
 	"gin/internal/global"
 	"gin/internal/library/vcrypto"
@@ -30,16 +30,14 @@ type handleObjInterface interface {
 }
 
 const (
-	HOTEL  = "hotel"
+	NORMAL = "normal"
 	SYSTEM = "system"
-	POLICE = "police"
 )
 
 func New() service.IdentifyInterface {
 	return &identifyLogic{
 		handlers: map[string]handleObjInterface{
-			HOTEL:  &Hotel{},
-			POLICE: &Police{},
+			NORMAL: &Normal{},
 			SYSTEM: &System{},
 		},
 	}
@@ -255,9 +253,7 @@ func (a *identifyLogic) InitIdentifyPermission(identifyType int8, identifyId int
 	case models.IDENTIFY_TYPE_SYSTEM:
 		Itype = SYSTEM
 	case models.IDENTIFY_TYPE_HOTEL:
-		Itype = HOTEL
-	case models.IDENTIFY_TYPE_POLICE:
-		Itype = POLICE
+		Itype = NORMAL
 	}
 	if Itype == "" {
 		return errors.New("初始化权限类型错误")

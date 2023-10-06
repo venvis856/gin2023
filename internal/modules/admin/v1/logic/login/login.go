@@ -3,7 +3,7 @@ package login
 import (
 	"encoding/json"
 	"errors"
-	v1 "gin/api/login/v1"
+	"gin/api/admin/login/v1"
 	"gin/internal/config"
 	"gin/internal/global"
 	"gin/internal/global/errcode"

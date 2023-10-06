@@ -2,7 +2,7 @@ package permission
 
 import (
 	"errors"
-	"gin/api/permission/v1"
+	"gin/api/admin/permission/v1"
 	"gin/internal/global"
 	"gin/internal/modules/admin/v1/logic/common"
 	"gin/internal/modules/admin/v1/logic/permission_operate"

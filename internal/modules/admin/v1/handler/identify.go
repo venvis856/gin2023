@@ -2,7 +2,7 @@ package handler
 
 import (
 	"errors"
-	v1 "gin/api/identify/v1"
+	"gin/api/admin/identify/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
 	"gin/internal/global/response"

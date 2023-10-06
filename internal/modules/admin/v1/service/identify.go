@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gin/api/identify/v1"
+	"gin/api/admin/identify/v1"
 	"gin/internal/library/handlePanic"
 	"gin/internal/modules/admin/v1/models"
 	"gorm.io/gorm"
