@@ -1,13 +1,10 @@
 package config
 
 import (
-	"gin/internal/global"
 	"gin/internal/library/db"
 	"gin/internal/library/filesystem"
-	"gin/internal/library/jump_proxy_sdk"
 	"gin/internal/library/logger"
 	"gin/internal/library/redis"
-	"github.com/zeebo/errs"
 )
 
 var Cfg *Config
@@ -28,20 +25,9 @@ type Config struct {
 	Upload     struct {
 		MaxSize int64 `help:"上传文件最大大小" default:"32000000"`
 	}
-	JumpConfig jump_proxy_sdk.Config
 }
 
-func InitConfig(conf *Config) {
+func InitConfig(conf *Config) (err error) {
 	Cfg = conf
-	errs := errs.Group{}
-	errs.Add(
-		global.InitLogger(&conf.Log),
-		global.InitFilesystem(&conf.Filesystem),
-		global.InitGorm(&conf.DB),
-		//global.InitRpc(),
-		//initRedis(&conf.Redis),
-	)
-	if errs.Err() != nil {
-		panic(errs.Err())
-	}
+	return
 }

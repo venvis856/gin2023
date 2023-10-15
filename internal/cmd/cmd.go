@@ -27,12 +27,12 @@ var (
 	runCmd = &cobra.Command{
 		Use:   "run",
 		Short: "运行程序system_api",
-		RunE:  cmdRun,
+		RunE:  Run,
 	}
 	appCmd = &cobra.Command{
 		Use:   "app",
 		Short: "运行程序app",
-		RunE:  appRun,
+		RunE:  App,
 	}
 	setupCmd = &cobra.Command{
 		Use:         "setup",
@@ -44,7 +44,7 @@ var (
 	setupConfig config.Config
 )
 
-func InitConfig() {
+func InitSystem() {
 	defaultConfig := helper.ApplicationAbsFileDir(process.DefaultCfgFilename)
 	cfgstruct.SetupFlag(MainCmd, &configFile, "config", defaultConfig, "配置文件")
 	//根据环境读取默认配置
@@ -65,7 +65,7 @@ func InitConfig() {
 
 }
 
-func cmdRun(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
+func Run(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
 	fmt.Println(config.Version)
 	gin.DisableConsoleColor()
 	//设置模式
@@ -74,7 +74,7 @@ func cmdRun(cmd *cobra.Command, args []string) (err error) { //禁用控制台�
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// 初始化全局配置, 出错会抛出panic
-	config.InitConfig(&runConfig)
+	InitSystemConfig(&runConfig)
 	//gin实例
 	ginDefault := gin.Default()
 	//设置静态资源
@@ -113,7 +113,7 @@ func cmdRun(cmd *cobra.Command, args []string) (err error) { //禁用控制台�
 	return nil
 }
 
-func appRun(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
+func App(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
 	fmt.Println(config.Version)
 	gin.DisableConsoleColor()
 	//设置模式
@@ -122,7 +122,7 @@ func appRun(cmd *cobra.Command, args []string) (err error) { //禁用控制台�
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// 初始化全局配置, 出错会抛出panic
-	config.InitConfig(&runConfig)
+	InitSystemConfig(&runConfig)
 	//gin实例
 	ginDefault := gin.Default()
 	//设置静态资源

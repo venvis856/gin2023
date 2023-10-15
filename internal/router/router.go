@@ -1,7 +1,7 @@
 package router
 
 import (
-	adminV1 "gin/internal/modules/admin/v1"
+	adminV1 "gin/internal/modules/double_admin/v1"
 	"github.com/gin-gonic/gin"
 )
 
