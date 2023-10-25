@@ -10,8 +10,6 @@ import (
 )
 
 func InitAdminRoutes(router *gin.Engine) {
-	router.Use(common_middleware.Cors())    // 跨域
-	router.Use(common_middleware.Tracker()) // 跟踪信息
 
 	router.Any("/v1/admin/version", func(ctx *gin.Context) {
 		ctx.JSON(200, config.Version)

@@ -74,7 +74,7 @@ func Run(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜�
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// 初始化全局配置, 出错会抛出panic
-	InitSystemConfig(&runConfig)
+	InitServer(&runConfig)
 	//gin实例
 	ginDefault := gin.Default()
 	//设置静态资源
@@ -122,7 +122,7 @@ func App(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜�
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// 初始化全局配置, 出错会抛出panic
-	InitSystemConfig(&runConfig)
+	InitServer(&runConfig)
 	//gin实例
 	ginDefault := gin.Default()
 	//设置静态资源

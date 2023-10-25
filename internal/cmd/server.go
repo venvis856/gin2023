@@ -6,7 +6,7 @@ import (
 	"github.com/zeebo/errs"
 )
 
-func InitSystemConfig(conf *config.Config) {
+func InitServer(conf *config.Config) {
 	errs := errs.Group{}
 	errs.Add(
 		config.InitConfig(conf),
