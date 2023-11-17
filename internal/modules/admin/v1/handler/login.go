@@ -1,0 +1,39 @@
+package handler
+
+import (
+	"fmt"
+	"gin/api/admin/login/v1"
+	"gin/internal/global"
+	"gin/internal/global/errcode"
+	"gin/internal/modules/admin/v1/service"
+	"github.com/gin-gonic/gin"
+)
+
+type LoginHandler struct{}
+
+func (a *LoginHandler) Login(c *gin.Context) {
+	var param v1.LoginReq
+	if err := c.ShouldBind(&param); err != nil {
+		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
+		return
+	}
+	rs, err := service.Login().Login(c, param)
+	if err != nil {
+		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
+		return
+	}
+	global.Response.Success(c, rs)
+}
+
+func (a *LoginHandler) UserInfo(c *gin.Context) {
+	retUser, err := service.Login().UserInfo(c)
+	if err != nil {
+		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
+		return
+	}
+	global.Response.Success(c, retUser)
+}
+
+func (a *LoginHandler) Logout(c *gin.Context) {
+	global.Response.Success(c, "")
+}

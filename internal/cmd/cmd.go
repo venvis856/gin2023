@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"gin/internal/cmd/system/cfgstruct"
 	"gin/internal/cmd/system/process"
-	"gin/internal/config"
+	"gin/internal/common_config"
 	"gin/internal/library/helper"
 	"gin/internal/router"
 	"github.com/gin-gonic/gin"
@@ -40,8 +40,8 @@ var (
 		RunE:        cmdSetup,
 		Annotations: map[string]string{"type": "setup"},
 	}
-	runConfig   config.Config
-	setupConfig config.Config
+	runConfig   common_config.Config
+	setupConfig common_config.Config
 )
 
 func InitSystem() {
@@ -66,7 +66,7 @@ func InitSystem() {
 }
 
 func Run(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
-	fmt.Println(config.Version)
+	fmt.Println(common_config.Version)
 	gin.DisableConsoleColor()
 	//设置模式
 	//gin.DebugMode、gin.ReleaseMode、gin.TestMode  debug release test
@@ -114,7 +114,7 @@ func Run(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜�
 }
 
 func App(cmd *cobra.Command, args []string) (err error) { //禁用控制台颜色
-	fmt.Println(config.Version)
+	fmt.Println(common_config.Version)
 	gin.DisableConsoleColor()
 	//设置模式
 	//gin.DebugMode、gin.ReleaseMode、gin.TestMode  debug release test

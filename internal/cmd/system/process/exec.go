@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"gin/internal/cmd/system/cfgstruct"
-	"gin/internal/config"
+	"gin/internal/common_config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -257,6 +257,6 @@ func FileExists(path string) bool {
 }
 
 func cmdVersion(cmd *cobra.Command, args []string) (err error) {
-	fmt.Println(config.Version)
+	fmt.Println(common_config.Version)
 	return nil
 }

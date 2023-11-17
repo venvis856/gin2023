@@ -1,14 +1,16 @@
 package common_middleware
 
 import (
-	"gin/internal/global/response"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func Tracker() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		_ = response.SetTrackId(ctx)
-		// 处理请求
-		ctx.Next()
+func TraceId() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_uuid, _ := uuid.NewRandom()
+		uuidStr := _uuid.String()
+		c.Header("trace_id", uuidStr)
+		c.Set("trace_id", uuidStr)
+		c.Next()
 	}
 }

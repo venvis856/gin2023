@@ -34,24 +34,3 @@ const (
 	FORBIDDEN_NO_PERMISSION ErrCode = 4004 // 无权限访问
 	ALARM_CONFIG_TIME_ERROR ErrCode = 4005 // 时间与已有配置配置有重叠
 )
-
-type ErrWrap struct {
-	errCode ErrCode
-	err     error
-}
-
-func (i ErrCode) Error() string {
-	return i.String()
-}
-
-func (i ErrCode) Wrap(err error) ErrWrap {
-	return ErrWrap{errCode: i, err: err}
-}
-
-func (ew ErrWrap) Error() string {
-	return ew.err.Error()
-}
-
-func (ew ErrWrap) ErrCode() int {
-	return int(ew.errCode)
-}

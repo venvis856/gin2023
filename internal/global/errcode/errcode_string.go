@@ -2,7 +2,6 @@
 
 package errcode
 
-import "strconv"
 
 func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
@@ -26,46 +25,4 @@ func _() {
 	_ = x[FORBIDDEN_METHOD-4003]
 	_ = x[FORBIDDEN_NO_PERMISSION-4004]
 	_ = x[ALARM_CONFIG_TIME_ERROR-4005]
-}
-
-const (
-	_ErrCode_name_0 = "server errorsuccess"
-	_ErrCode_name_1 = "请求无效"
-	_ErrCode_name_2 = "无本系统权限"
-	_ErrCode_name_3 = "参数错误登录失败未登录"
-	_ErrCode_name_4 = "操作失败操作insert db失败操作update db失败操作delete db失败"
-	_ErrCode_name_5 = "禁止访问禁止SN访问禁止IP访问禁止访问方法无权限访问时间与已有配置配置有重叠"
-	_ErrCode_name_6 = "禁止访问"
-)
-
-var (
-	_ErrCode_index_0 = [...]uint8{0, 12, 19}
-	_ErrCode_index_3 = [...]uint8{0, 12, 24, 33}
-	_ErrCode_index_4 = [...]uint8{0, 12, 33, 54, 75}
-	_ErrCode_index_5 = [...]uint8{0, 12, 26, 40, 58, 73, 109}
-)
-
-func (i ErrCode) String() string {
-	switch {
-	case -1 <= i && i <= 0:
-		i -= -1
-		return _ErrCode_name_0[_ErrCode_index_0[i]:_ErrCode_index_0[i+1]]
-	case i == 401:
-		return _ErrCode_name_1
-	case i == 403:
-		return _ErrCode_name_2
-	case 1003 <= i && i <= 1005:
-		i -= 1003
-		return _ErrCode_name_3[_ErrCode_index_3[i]:_ErrCode_index_3[i+1]]
-	case 2000 <= i && i <= 2003:
-		i -= 2000
-		return _ErrCode_name_4[_ErrCode_index_4[i]:_ErrCode_index_4[i+1]]
-	case 4000 <= i && i <= 4005:
-		i -= 4000
-		return _ErrCode_name_5[_ErrCode_index_5[i]:_ErrCode_index_5[i+1]]
-	case i == 5000:
-		return _ErrCode_name_6
-	default:
-		return "ErrCode(" + strconv.FormatInt(int64(i), 10) + ")"
-	}
 }
