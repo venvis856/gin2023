@@ -25,15 +25,6 @@ func (a *LoginHandler) Login(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (a *LoginHandler) UserInfo(c *gin.Context) {
-	retUser, err := service.Login().UserInfo(c)
-	if err != nil {
-		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
-		return
-	}
-	global.Response.Success(c, retUser)
-}
-
 func (a *LoginHandler) Logout(c *gin.Context) {
 	global.Response.Success(c, "")
 }

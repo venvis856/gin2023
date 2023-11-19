@@ -8,7 +8,6 @@ import (
 
 type LoginInterface interface {
 	Login(c *gin.Context, param v1.LoginReq) (map[string]interface{}, error)
-	UserInfo(c *gin.Context) (v1.LoginInfo, error)
 }
 
 var loginObj LoginInterface

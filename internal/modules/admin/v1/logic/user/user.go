@@ -61,13 +61,11 @@ func (a *userLogic) Info(param v1.InfoReq) (map[string]interface{}, error) {
 
 func (a *userLogic) Create(param v1.CreateReq) (int64, error) {
 
-	vid := service.TableIds().GetAddId("user", param.IdentifyId)
+	uid := service.TableIds().GetAddId("user", param.IdentifyId)
 
 	//密码加密
 	key := gconv.String(common_config.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
-	roleIdsJson, _ := json.Marshal(param.RoleIds)
-	roleIds := gconv.String(roleIdsJson)
 
 	data := models.User{
 		Phone:      param.Phone,
@@ -76,10 +74,8 @@ func (a *userLogic) Create(param v1.CreateReq) (int64, error) {
 		Realname:   param.RealName,
 		Password:   pwd,
 		Status:     param.Status,
-		RoleIds:    roleIds,
 		CreateTime: carbon.Now().Timestamp(),
-		IdentifyId: param.IdentifyId,
-		Vid:        vid,
+		Uid:        uid,
 	}
 
 	result := global.DB.Model(&models.User{}).Create(&data)
@@ -93,9 +89,6 @@ func (a *userLogic) Update(param v1.UpdateReq) (int64, error) {
 	//密码加密
 	key := gconv.String(common_config.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
-	roleIdsJson, _ := json.Marshal(param.RoleIds)
-	roleIds := gconv.String(roleIdsJson)
-	//identifyIds, _ := json.Marshal([]int64{param.IdentifyId})
 	data := models.User{
 		Phone:      param.Phone,
 		Username:   param.UserName,
@@ -103,9 +96,7 @@ func (a *userLogic) Update(param v1.UpdateReq) (int64, error) {
 		Realname:   param.RealName,
 		Password:   pwd,
 		Status:     param.Status,
-		RoleIds:    roleIds,
 		UpdateTime: carbon.Now().Timestamp(),
-		//IdentifyId: param.IdentifyId, // 不可更改归属
 	}
 
 	result := global.DB.Model(&models.User{}).Where("id = ? and status !=?", param.Id, 9).Updates(&data)

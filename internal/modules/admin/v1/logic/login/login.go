@@ -6,7 +6,6 @@ import (
 	"gin/api/admin/login/v1"
 	"gin/internal/common_config"
 	"gin/internal/global"
-	"gin/internal/global/errcode"
 	"gin/internal/library/jwt"
 	"gin/internal/library/vcrypto"
 	"gin/internal/modules/admin/v1/logic/permission_operate"
@@ -65,7 +64,7 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 	}
 
 	if !authBool {
-		return map[string]interface{}{}, errcode.TOKEN_FORBIDDEN
+		return map[string]interface{}{}, errors.New("authBool 权限无效")
 	}
 
 	jsonResult, err := json.Marshal(result)
@@ -94,38 +93,3 @@ func (a *loginLogic) LoginLog(c *gin.Context, userId int64) {
 	global.DB.Model(&models.User{}).Where("id = ?", userId).Updates(&data)
 }
 
-func (a *loginLogic) UserInfo(c *gin.Context) (v1.LoginInfo, error) {
-	userInfo := service.User().GetUserInfo(c)
-	if userInfo.UserId == 0 {
-		return v1.LoginInfo{}, errcode.TOKEN_FAIL
-	}
-	retUser := struct {
-		*models.User
-		RoleId       int64  `json:"roleId"`
-		Role         string `json:"role"`
-		StreetName   string `json:"street_name"`
-		IdentifyName string `json:"identify_name"`
-	}{}
-	err := global.DB.Model(models.User{}).Preload("Identify").Find(&retUser.User, userInfo.UserId).Error
-	if err != nil {
-		return v1.LoginInfo{}, err
-	}
-	rols := models.Role{}
-	var roles []int64
-	err = json.Unmarshal([]byte(retUser.RoleIds), &roles)
-	if err != nil {
-		return v1.LoginInfo{}, err
-	}
-	if len(roles) == 0 {
-		return retUser, nil
-	}
-	err = global.DB.Model(models.Role{}).Where("id in ?", roles).Take(&rols).Error
-	if err != nil {
-		return v1.LoginInfo{}, err
-	}
-	retUser.RoleId = rols.ID
-	retUser.Role = rols.RoleName
-	retUser.StreetName = retUser.User.Identify.Location
-	retUser.IdentifyName = retUser.User.Identify.IdentifyName
-	return retUser, nil
-}

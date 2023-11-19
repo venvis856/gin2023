@@ -52,7 +52,7 @@ func (a *roleLogic) Info(param v1.InfoReq) map[string]interface{} {
 }
 
 func (a *roleLogic) Create(param v1.CreateReq) (int64, error) {
-	vid := service.TableIds().GetAddId("role", param.IdentifyId)
+	uid := service.TableIds().GetAddId("role", param.IdentifyId)
 
 	data := models.Role{
 		RoleName:   param.RoleName,
@@ -60,7 +60,7 @@ func (a *roleLogic) Create(param v1.CreateReq) (int64, error) {
 		Type:       param.Type,
 		IdentifyId: param.IdentifyId,
 		CreateTime: carbon.Now().Timestamp(),
-		Vid:        vid,
+		Uid:        uid,
 	}
 
 	result := global.DB.Model(&models.Role{}).Create(&data)

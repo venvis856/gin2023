@@ -59,7 +59,6 @@ func (a *permissionLogic) Create(param v1.CreateReq) (int64, error) {
 		PermissionCode:       param.PermissionCode,
 		Type:                 param.Type,
 		FatherPermissionCode: param.FatherPermissionCode,
-		IdentifyId:           param.IdentifyId,
 		Status:               param.Status,
 		CreateTime:           carbon.Now().Timestamp(),
 	}
@@ -77,7 +76,6 @@ func (a *permissionLogic) Update(param v1.UpdateReq) (int64, error) {
 		PermissionCode:       param.PermissionCode,
 		Type:                 param.Type,
 		FatherPermissionCode: param.FatherPermissionCode,
-		IdentifyId:           param.IdentifyId,
 		Status:               param.Status,
 		UpdateTime:           carbon.Now().Timestamp(),
 	}
