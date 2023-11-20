@@ -29,15 +29,15 @@ func New() service.LoginInterface {
 }
 
 func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 	//密码加密
 	key := gconv.String(common_config.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
 
+	var userInfo models.User
 	model := global.DB.Model(&models.User{})
-	model.Joins("left join identify on user.identify_id =identify.id ")
-	model.Select("user.id as user_id, user.vid,user.username,user.phone,user.realname,user.email,user.create_time,user.identify_id,identify.identify_name,identify.type as identify_type")
+	model.Select("user.id as user_id, user.uid,user.username,user.phone,user.realname,user.email,user.create_time")
 	model.Where("user.status != 9 and user.password = ?", pwd)
-	model.Where("identify.type =?", param.IdentifyType)
 
 	if param.Phone != "" {
 		model.Where("user.phone=?", param.Phone)
@@ -46,43 +46,36 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 	} else if param.UserName != "" {
 		model.Where("user.username=?", param.UserName)
 	}
+	model.First(&userInfo)
 
-	result := service.User().GetUserInfo(c)
-	model.Find(&result)
-	if result.UserId == 0 {
-		return map[string]interface{}{}, errors.New("账号或密码错误")
+	if userInfo.ID == 0 {
+		return result, errors.New("账号或密码错误")
 	}
-	result.Scene = param.Scene
+
+	identifyId, _ := c.Get("identify_id")
 	// 校验权限
-	permissionSlice := permission_operate.GetAllPermissionByUser(result.UserId, result.IdentifyId)
-	authBool := false
-	for _, v := range permissionSlice {
-		if gconv.Uint8(v["scene"]) == param.Scene {
-			authBool = true
-			break
-		}
+	permissionSlice := permission_operate.GetAllPermissionByUser(userInfo.ID, identifyId.(int64))
+
+	if len(permissionSlice) == 0 {
+		return map[string]interface{}{}, errors.New("没有权限无效")
 	}
 
-	if !authBool {
-		return map[string]interface{}{}, errors.New("authBool 权限无效")
-	}
-
-	jsonResult, err := json.Marshal(result)
+	jsonResult, err := json.Marshal(userInfo)
 	if err != nil {
 		return map[string]interface{}{}, err
 	}
-	token, err := jwt.CreateJwtGoToken(string(jsonResult), gconv.String(result.UserId))
+	token, err := jwt.CreateJwtGoToken(string(jsonResult), gconv.String(userInfo.ID))
 	if err != nil {
 		return map[string]interface{}{}, err
 	}
 
-	rs := map[string]interface{}{
+	result = map[string]interface{}{
 		"userInfo": result,
 		"token":    token,
 	}
 
-	go a.LoginLog(c, result.UserId)
-	return rs, nil
+	go a.LoginLog(c, userInfo.ID)
+	return result, nil
 }
 
 func (a *loginLogic) LoginLog(c *gin.Context, userId int64) {
@@ -92,4 +85,3 @@ func (a *loginLogic) LoginLog(c *gin.Context, userId int64) {
 	}
 	global.DB.Model(&models.User{}).Where("id = ?", userId).Updates(&data)
 }
-

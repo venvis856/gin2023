@@ -15,13 +15,13 @@ func InitAdminRoutes(router *gin.Engine) {
 		ctx.JSON(200, common_config.Version)
 	})
 	loginHandler := new(handler.LoginHandler)
-	router.Any("/v1/admin/login", common_middleware.RequestLog("gin_admin"), loginHandler.Login)
+	router.Any("/v1/admin/login", common_middleware.RequestLog("gin_admin"), middleware.CheckIdentify(),loginHandler.Login)
 	selectHandler := new(handler.SelectHandler)
 	router.Any("/v1/admin/select/identify_list", selectHandler.GetIdentifySelectList)
 
 	// todu init
 	initIdentifyHandler := new(handler.IdentifyHandler)
-	router.Any("/v1/identify/init_create", initIdentifyHandler.Create)
+	router.Any("/v1/identify/init_create", initIdentifyHandler.InitCreate)
 	userHandler := new(handler.UserHandler)
 	//router.Any("user/create", userHandler.Create)
 	router.Any("/v1/user/secret", userHandler.GetSecret)
@@ -30,7 +30,8 @@ func InitAdminRoutes(router *gin.Engine) {
 	{
 		routerGroup.Use(common_middleware.RequestLog("gin_admin"))
 		routerGroup.Use(middleware.CheckToken())
-		//routerGroup.Use(middleware.CheckPermission())
+		routerGroup.Use(middleware.CheckIdentify())
+		routerGroup.Use(middleware.CheckPermission())
 
 		routerGroup.Any("user/items", middleware.CheckPermission("web_user_list"), userHandler.Items)
 		routerGroup.Any("user/info", middleware.CheckPermission("web_user_info"), userHandler.Info)

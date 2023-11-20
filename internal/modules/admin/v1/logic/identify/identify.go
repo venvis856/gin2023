@@ -9,6 +9,7 @@ import (
 	"gin/internal/library/vcrypto"
 	"gin/internal/modules/admin/v1/config"
 	"gin/internal/modules/admin/v1/logic/common"
+	"gin/internal/modules/admin/v1/logic/permission_operate"
 	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gogf/gf/util/gconv"
@@ -74,10 +75,12 @@ func (a *identifyLogic) Info(param v1.InfoReq) (map[string]interface{}, error) {
 
 func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	// 校验如果新增的是系统，只能初始化一次
-	var systemIdentifyInfo models.Identify
-	global.DB.Model(&models.Identify{}).Where("type = ?", models.IDENTIFY_TYPE_SYSTEM).First(&systemIdentifyInfo)
-	if systemIdentifyInfo.ID != 0 {
-		return 0, errors.New("系统身份已经初始化")
+	if int(param.Type) == models.IDENTIFY_TYPE_SYSTEM {
+		var systemIdentifyInfo models.Identify
+		global.DB.Model(&models.Identify{}).Where("type = ?", models.IDENTIFY_TYPE_SYSTEM).First(&systemIdentifyInfo)
+		if systemIdentifyInfo.ID != 0 {
+			return 0, errors.New("系统身份已经初始化")
+		}
 	}
 
 	// 开始新增
@@ -149,6 +152,16 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	if result.Error != nil {
 		tx.Rollback()
 		return 0, result.Error
+	}
+
+	// 如新增系统，还需要新增系统的权限
+	if int(param.Type) == models.IDENTIFY_TYPE_SYSTEM {
+		allPermission := permission_operate.GetAllPermissionCodes()
+		err := permission_operate.IdentifyAddPermission(identifyData.ID, allPermission)
+		if err != nil {
+			tx.Rollback()
+			return 0, err
+		}
 	}
 
 	tx.Commit()

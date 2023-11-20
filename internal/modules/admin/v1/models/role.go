@@ -1,5 +1,9 @@
 package models
 
+const (
+	ROLE_TYPE_SYSTEM = 1
+)
+
 // Role  角色表
 type Role struct {
 	ID         int64  `gorm:"column:id" json:"id"`                   //  id

@@ -5,6 +5,7 @@ import (
 	"gin/api/admin/identify/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
+	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gin-gonic/gin"
 )
@@ -43,6 +44,21 @@ func (*IdentifyHandler) Create(c *gin.Context) {
 		return
 	}
 
+	affected, err := service.Identify().Create(param)
+	if err != nil {
+		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
+		return
+	}
+	global.Response.Success(c, affected)
+}
+
+func (*IdentifyHandler) InitCreate(c *gin.Context) {
+	var param v1.CreateReq
+	if err := c.ShouldBind(&param); err != nil {
+		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
+		return
+	}
+	param.Type = int8(models.IDENTIFY_TYPE_SYSTEM)
 	affected, err := service.Identify().Create(param)
 	if err != nil {
 		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())

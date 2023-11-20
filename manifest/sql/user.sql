@@ -21,7 +21,6 @@ CREATE TABLE `permission`
     `permission_name`        VARCHAR(100) NOT NULL COMMENT '权限名称',
     `permission_code`        VARCHAR(100) NOT NULL COMMENT '权限code',
     `type`                   TINYINT ( 3 ) UNSIGNED NOT NULL COMMENT '类型 1菜单 2普通权限',
-    `scene`                  TINYINT ( 3 ) UNSIGNED NOT NULL COMMENT '场景 1 后台 2 app 3 大屏',
     `father_permission_code` VARCHAR(100) DEFAULT '0' COMMENT '父权限code',
     `status`                 TINYINT ( 4 ) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1：正常 5 禁用  9 删除',
     `create_time`            INT ( 11 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户创建时间',
