@@ -15,13 +15,13 @@ func InitAdminRoutes(router *gin.Engine) {
 		ctx.JSON(200, common_config.Version)
 	})
 	loginHandler := new(handler.LoginHandler)
-	router.Any("/v1/admin/login", common_middleware.RequestLog("gin_admin"), middleware.CheckIdentify(),loginHandler.Login)
+	router.Any("/v1/admin/login", common_middleware.RequestLog("gin_admin"), loginHandler.Login)
 	selectHandler := new(handler.SelectHandler)
 	router.Any("/v1/admin/select/identify_list", selectHandler.GetIdentifySelectList)
 
 	// todu init
 	initIdentifyHandler := new(handler.IdentifyHandler)
-	router.Any("/v1/identify/init_create", initIdentifyHandler.InitCreate)
+	router.POST("/v1/admin/identify/init_create", initIdentifyHandler.InitCreate)
 	userHandler := new(handler.UserHandler)
 	//router.Any("user/create", userHandler.Create)
 	router.Any("/v1/user/secret", userHandler.GetSecret)

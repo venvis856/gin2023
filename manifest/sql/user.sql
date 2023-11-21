@@ -127,3 +127,15 @@ CREATE TABLE `table_ids`
     PRIMARY KEY (`id`) USING BTREE,
     KEY           `lianhe` ( `table_name`, `identify_id` ) USING BTREE
 ) ENGINE = INNODB AUTO_INCREMENT = 47 DEFAULT CHARSET = utf8mb4 COMMENT = '虚拟id表';
+
+
+---------------------------------
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('设置','set',1,'0',1);
+-- SET @id = LAST_INSERT_ID();
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户管理','user_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色管理','role_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限管理','permission_list',1,'set',1);
+
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('系统','system',1,'',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符','identify_list',1,'system',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份权限关系','identify_permission',1,'system',1);

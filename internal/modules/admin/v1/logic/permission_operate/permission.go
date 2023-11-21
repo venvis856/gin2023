@@ -69,7 +69,7 @@ func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 	}
 	//fmt.Println(newPermission, "newPermission=====")
 	if len(newPermission) > 0 {
-		model2 := tx.Model(&models.RolePermission{})
+		model2 := tx.Model(&models.IdentifyPermission{})
 		result := model2.Create(newPermission)
 		if result.Error != nil {
 			tx.Rollback()

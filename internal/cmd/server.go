@@ -12,7 +12,7 @@ func InitServer(conf *common_config.Config) {
 		common_config.InitConfig(conf),
 		global.InitLogger(&conf.Log),
 		global.InitFilesystem(&conf.Filesystem),
-		//global.InitGorm(&conf.DB),
+		global.InitGorm(&conf.DB),
 		//global.InitRpc(),
 		//initRedis(&conf.Redis),
 	)

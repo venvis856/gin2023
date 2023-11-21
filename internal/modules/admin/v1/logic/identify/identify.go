@@ -99,7 +99,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result := model.Create(&identifyData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0, result.Error
+		return 0, errors.New(fmt.Sprintf("Identify create err :%v", result.Error))
 	}
 
 	// 新增角色
@@ -116,7 +116,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = roleModel.Create(&roleData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0, result.Error
+		return 0, errors.New(fmt.Sprintf("role create err :%v", result.Error))
 	}
 
 	// 新增管理员
@@ -138,7 +138,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = userModel.Create(&userData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0, result.Error
+		return 0,  errors.New(fmt.Sprintf("user create err :%v", result.Error))
 	}
 
 	// 新增 用户角色表
@@ -151,7 +151,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = tx.Model(&models.UserRole{}).Create(&userRoleData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0, result.Error
+		return 0,  errors.New(fmt.Sprintf("user role create err :%v", result.Error))
 	}
 
 	// 如新增系统，还需要新增系统的权限
