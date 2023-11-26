@@ -1,11 +1,13 @@
 package httpClient
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gin/internal/global"
 	"io"
 	"io/ioutil"
 	"net"
@@ -158,4 +160,84 @@ func HttpPostWithHeader(http_url string, data map[string]string, header map[stri
 	//获取cookie后并转化成string
 	body, _ := ioutil.ReadAll(resp.Body)
 	return string(body)
+}
+
+func HttpSend(reqUrl string, method string, data map[string]string, header map[string]string, timeOut time.Duration) ([]byte, error) {
+	reqTimeOut := time.Duration(global.Cfg.Http.Timeout) * time.Second
+	if timeOut != 0 {
+		reqTimeOut = timeOut
+	}
+	client := &http.Client{
+		Transport: &http.Transport{
+			MaxIdleConnsPerHost:   10,
+			ResponseHeaderTimeout: time.Second * 3,
+			DialContext:           (&net.Dialer{Timeout: time.Second * 2}).DialContext,
+			TLSClientConfig: &tls.Config{
+				MaxVersion:         tls.VersionTLS11,
+				InsecureSkipVerify: true,
+			},
+		},
+		Timeout: reqTimeOut,
+	}
+	//body
+	urlValues := url.Values{}
+	for k, v := range data {
+		urlValues.Add(k, v)
+	}
+	req, err := http.NewRequest(method, reqUrl, strings.NewReader(urlValues.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	//获取cookie后并转化成string
+	body, err := ioutil.ReadAll(resp.Body)
+	return body, nil
+}
+
+func HttpStreamSend(reqUrl string, method string, data map[string]string, header map[string]string, timeOut time.Duration, ch chan []byte) {
+	reqTimeOut := time.Duration(global.Cfg.Http.StreamTimeout) * time.Second
+	if timeOut != 0 {
+		reqTimeOut = timeOut
+	}
+	client := &http.Client{
+		Transport: &http.Transport{
+			MaxIdleConnsPerHost:   10,
+			ResponseHeaderTimeout: time.Second * 3,
+			DialContext:           (&net.Dialer{Timeout: time.Second * 2}).DialContext,
+			TLSClientConfig: &tls.Config{
+				MaxVersion:         tls.VersionTLS11,
+				InsecureSkipVerify: true,
+			},
+		},
+		Timeout: reqTimeOut,
+	}
+	//body
+	urlValues := url.Values{}
+	for k, v := range data {
+		urlValues.Add(k, v)
+	}
+	req, err := http.NewRequest(method, reqUrl, strings.NewReader(urlValues.Encode()))
+	if err != nil {
+		ch <- []byte(err.Error())
+		return
+	}
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	//获取cookie后并转化成string
+	receive := bufio.NewReader(resp.Body)
+	for {
+		content, err := receive.ReadBytes('\n')
+		if err != nil {
+			break
+		}
+		ch <- content
+	}
+
 }

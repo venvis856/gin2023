@@ -1,3 +1,3 @@
-package common_config
+package config
 
 var Version = "v1.0.1"

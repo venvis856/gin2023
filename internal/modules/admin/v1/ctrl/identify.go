@@ -1,11 +1,11 @@
-package handler
+package ctrl
 
 import (
 	"fmt"
 	"gin/api/admin/identify/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
-	"gin/internal/modules/admin/v1/models"
+	"gin/internal/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gin-gonic/gin"
 )

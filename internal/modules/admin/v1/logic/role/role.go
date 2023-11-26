@@ -3,8 +3,8 @@ package role
 import (
 	"gin/api/admin/role/v1"
 	"gin/internal/global"
+	"gin/internal/models"
 	"gin/internal/modules/admin/v1/logic/common"
-	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/golang-module/carbon"
 )

@@ -1,15 +1,15 @@
 package cmd
 
 import (
-	"gin/internal/common_config"
+	"gin/internal/config"
 	"gin/internal/global"
 	"github.com/zeebo/errs"
 )
 
-func InitServer(conf *common_config.Config) {
+func InitServer(conf *config.Config) {
 	errs := errs.Group{}
 	errs.Add(
-		common_config.InitConfig(conf),
+		global.InitConfig(conf),
 		global.InitLogger(&conf.Log),
 		global.InitFilesystem(&conf.Filesystem),
 		global.InitGorm(&conf.DB),

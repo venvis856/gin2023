@@ -1,4 +1,4 @@
-package common_config
+package config
 
 import (
 	"gin/internal/library/db"
@@ -6,8 +6,6 @@ import (
 	"gin/internal/library/logger"
 	"gin/internal/library/redis"
 )
-
-var Cfg *Config
 
 type Config struct {
 	Login struct {
@@ -25,9 +23,9 @@ type Config struct {
 	Upload     struct {
 		MaxSize int64 `help:"上传文件最大大小" default:"32000000"`
 	}
+	Http struct {
+		Timeout       int `help:"http请求超时时间" default:"5"`
+		StreamTimeout int `help:"http流式请求超时时间" default:"60"`
+	}
 }
 
-func InitConfig(conf *Config) (err error) {
-	Cfg = conf
-	return
-}

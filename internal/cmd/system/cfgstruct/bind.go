@@ -124,7 +124,7 @@ type confVar struct {
 }
 
 // Bind sets flags on a FlagSet that match the configuration struct
-// 'config'. This works by traversing the config struct using the 'reflect'
+// 'consts'. This works by traversing the consts struct using the 'reflect'
 // package.
 func Bind(flags FlagSet, config interface{}, opts ...BindOpt) {
 	bind(flags, config, opts...)
@@ -133,7 +133,7 @@ func Bind(flags FlagSet, config interface{}, opts ...BindOpt) {
 func bind(flags FlagSet, config interface{}, opts ...BindOpt) {
 	ptrType := reflect.TypeOf(config)
 	if ptrType.Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("invalid config type: %#v. Expecting pointer to struct.", config))
+		panic(fmt.Sprintf("invalid consts type: %#v. Expecting pointer to struct.", config))
 	}
 	isDev := true
 	isTest := false
@@ -162,7 +162,7 @@ func bind(flags FlagSet, config interface{}, opts ...BindOpt) {
 
 func bindConfig(flags FlagSet, prefix string, val reflect.Value, vars map[string]confVar, setupCommand, setupStruct bool, isDev, isTest bool) {
 	if val.Kind() != reflect.Struct {
-		panic(fmt.Sprintf("invalid config type: %#v. Expecting struct.", val.Interface()))
+		panic(fmt.Sprintf("invalid consts type: %#v. Expecting struct.", val.Interface()))
 	}
 	typ := val.Type()
 	resolvedVars := make(map[string]string, len(vars))
@@ -355,7 +355,7 @@ func bindConfig(flags FlagSet, prefix string, val reflect.Value, vars map[string
 
 func bindNewConfig(flags FlagSet, prefix string, val reflect.Value, vars map[string]confVar, setupCommand, setupStruct bool, isDev, isTest bool, identify string) {
 	if val.Kind() != reflect.Struct {
-		panic(fmt.Sprintf("invalid config type: %#v. Expecting struct.", val.Interface()))
+		panic(fmt.Sprintf("invalid consts type: %#v. Expecting struct.", val.Interface()))
 	}
 	typ := val.Type()
 	resolvedVars := make(map[string]string, len(vars))
@@ -653,9 +653,9 @@ func expand(vars map[string]string, val string) string {
 	return os.Expand(val, func(key string) string { return vars[key] })
 }
 
-// FindConfigFileParam returns '--config' param from os.Args (if exists).
+// FindConfigFileParam returns '--consts' param from os.Args (if exists).
 func FindConfigFileParam() string {
-	return FindFlagEarly("config")
+	return FindFlagEarly("consts")
 }
 
 // FindDefaultsParam returns '--defaults' param from os.Args (if it exists).

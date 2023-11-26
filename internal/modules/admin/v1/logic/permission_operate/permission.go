@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"gin/internal/global"
 	"gin/internal/library/helper"
-	"gin/internal/modules/admin/v1/config"
-	"gin/internal/modules/admin/v1/models"
+	models2 "gin/internal/models"
+	"gin/internal/modules/admin/v1/consts"
 	"github.com/gogf/gf/util/gconv"
 )
 
@@ -14,21 +14,21 @@ import (
 // 获取所有权限
 func GetAllPermission() []map[string]interface{} {
 	var result []map[string]interface{}
-	global.DB.Model(&models.Permission{}).Find(&result)
+	global.DB.Model(&models2.Permission{}).Find(&result)
 	return result
 }
 
 // 获取权限的code
 func GetAllPermissionCodes() []string {
 	var result []string
-	global.DB.Model(&models.Permission{}).Pluck("permission_code", &result)
+	global.DB.Model(&models2.Permission{}).Pluck("permission_code", &result)
 	return result
 }
 
 // 获取某个 identify 下的所有权限
 func GetAllPermissionByIdentify(identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
-	global.DB.Model(&models.IdentifyPermission{}).Where("identify_id=? and is_effective = ?", identifyId, config.EFFECTIVE_YES).Find(&result)
+	global.DB.Model(&models2.IdentifyPermission{}).Where("identify_id=? and is_effective = ?", identifyId, consts.EFFECTIVE_YES).Find(&result)
 	return result
 }
 
@@ -36,7 +36,7 @@ func GetAllPermissionByIdentify(identifyId int64) []map[string]interface{} {
 func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 	// 开始事务
 	tx := global.DB.Begin()
-	model := tx.Model(&models.IdentifyPermission{})
+	model := tx.Model(&models2.IdentifyPermission{})
 	// 先全部取消列表下对应的权限
 	rs := model.Where("identify_id = ? ", identifyId).Update("is_effective", 0)
 	if rs.Error != nil {
@@ -44,7 +44,7 @@ func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 	}
 	// 新增权限，存在先更新
 	updateDate := map[string]interface{}{
-		"is_effective": config.EFFECTIVE_YES,
+		"is_effective": consts.EFFECTIVE_YES,
 	}
 	permissionIds := GetPermissionIdsByPermissionCode(permissionCodes)
 	rs = model.Where("permission_id in ? and identify_id=?", permissionIds, identifyId).Updates(updateDate)
@@ -54,7 +54,7 @@ func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 	}
 	// 找出第一次新增的权限，插入
 	var hasPermission []int64
-	tx.Model(&models.IdentifyPermission{}).Where("identify_id=?", identifyId).Pluck("permission_id", &hasPermission)
+	tx.Model(&models2.IdentifyPermission{}).Where("identify_id=?", identifyId).Pluck("permission_id", &hasPermission)
 	//fmt.Println(hasPermission, "=========")
 	//return nil
 	newPermission := make([]map[string]interface{}, 0)
@@ -63,13 +63,13 @@ func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 			newPermission = append(newPermission, map[string]interface{}{
 				"permission_id": v,
 				"identify_id":   identifyId,
-				"is_effective":  config.EFFECTIVE_YES,
+				"is_effective":  consts.EFFECTIVE_YES,
 			})
 		}
 	}
 	//fmt.Println(newPermission, "newPermission=====")
 	if len(newPermission) > 0 {
-		model2 := tx.Model(&models.IdentifyPermission{})
+		model2 := tx.Model(&models2.IdentifyPermission{})
 		result := model2.Create(newPermission)
 		if result.Error != nil {
 			tx.Rollback()
@@ -86,15 +86,15 @@ func IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 func UserAddPermission(userId int64, permissionCodes []string, identifyId int64) error {
 	// 开始事务
 	tx := global.DB.Begin()
-	model := tx.Model(&models.UserPermission{})
+	model := tx.Model(&models2.UserPermission{})
 	// 先全部取消列表下对应的权限
-	rs := model.Where("user_id = ? and identify_id=?", userId, identifyId).Update("is_effective", config.EFFECTIVE_NO)
+	rs := model.Where("user_id = ? and identify_id=?", userId, identifyId).Update("is_effective", consts.EFFECTIVE_NO)
 	if rs.Error != nil {
 		return errors.New("权限重置失败")
 	}
 	// 新增权限，存在先更新
 	updateDate := map[string]interface{}{
-		"is_effective": config.EFFECTIVE_YES,
+		"is_effective": consts.EFFECTIVE_YES,
 	}
 	permissionIds := GetPermissionIdsByPermissionCode(permissionCodes)
 	rs = model.Where("user_id = ? and permission_id in ? and identify_id=?", userId, permissionIds, identifyId).Updates(updateDate)
@@ -114,12 +114,12 @@ func UserAddPermission(userId int64, permissionCodes []string, identifyId int64)
 				"user_id":       userId,
 				"permission_id": v,
 				"identify_id":   identifyId,
-				"is_effective":  config.EFFECTIVE_YES,
+				"is_effective":  consts.EFFECTIVE_YES,
 			})
 		}
 	}
 	//fmt.Println(newPermission, "newPermission=====")
-	model2 := tx.Model(&models.UserPermission{})
+	model2 := tx.Model(&models2.UserPermission{})
 	result := model2.Create(newPermission)
 	if result.Error != nil {
 		tx.Rollback()
@@ -132,7 +132,7 @@ func UserAddPermission(userId int64, permissionCodes []string, identifyId int64)
 // 获取用户下直接的权限
 func GetPermissionByUser(userId int64, identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
-	global.DB.Model(&models.UserPermission{}).
+	global.DB.Model(&models2.UserPermission{}).
 		Select("permission.id,permission.permission_name,permission.permission_code,permission.type,permission.father_permission_code,permission.identify_id").
 		Joins("left join permission on user_permission.permission_id=permission.id").
 		Where("user_permission.user_id = ? and permission.status=1 and user_permission.identify_id=? and user_permission.is_effective=1", userId, identifyId).Find(&result)
@@ -145,24 +145,24 @@ func GetAllPermissionByUser(userId int64, identifyId int64) []map[string]interfa
 	// 获取用户所在角色
 	//var userInfo map[string]interface{}
 	userInfo := map[string]interface{}{}
-	global.DB.Model(&models.User{}).Where("id = ?", userId).First(&userInfo)
+	global.DB.Model(&models2.User{}).Where("id = ?", userId).First(&userInfo)
 	if len(userInfo) == 0 {
 		return nil
 	}
 	var roleIds []int64
-	global.DB.Model(models.UserRole{}).Where("user_id = ? and identify_id=?", userId, identifyId).Pluck("role_id", &roleIds)
+	global.DB.Model(models2.UserRole{}).Where("user_id = ? and identify_id=?", userId, identifyId).Pluck("role_id", &roleIds)
 	// 获取所属角色拥有的权限
 	var rolePermissionResult []map[string]interface{}
 	isGlobal := false
 	if len(roleIds) != 0 {
 		var roleRow []map[string]interface{}
 		// 判断是否全局权限
-		global.DB.Model(&models.Role{}).Where("id in ? and type=1 and status=1 and identify_id=?", roleIds, identifyId).Find(&roleRow)
+		global.DB.Model(&models2.Role{}).Where("id in ? and type=1 and status=1 and identify_id=?", roleIds, identifyId).Find(&roleRow)
 		if len(roleRow) != 0 {
 			isGlobal = true
 		}
 		if isGlobal {
-			global.DB.Model(&models.Permission{}).Select("id,permission_name,permission_code,type,father_permission_code,identify_id").
+			global.DB.Model(&models2.Permission{}).Select("id,permission_name,permission_code,type,father_permission_code,identify_id").
 				Where("status!=9 and identify_id=?", identifyId).Find(&result)
 			return result
 		}
@@ -179,8 +179,8 @@ func GetAllPermissionByUser(userId int64, identifyId int64) []map[string]interfa
 
 // 判断用户是否有权限
 func CheckUserHasPermission(userId int64, permissionCode string, identifyId int64) bool {
-	var userInfo models.User
-	global.DB.Model(&models.User{}).Where("id = ? and status != 9", userId).First(&userInfo)
+	var userInfo models2.User
+	global.DB.Model(&models2.User{}).Where("id = ? and status != 9", userId).First(&userInfo)
 	if userInfo.ID == 0 {
 		return false
 	}
@@ -192,19 +192,19 @@ func CheckUserHasPermission(userId int64, permissionCode string, identifyId int6
 	permissionId := permissionIds[0]
 
 	userPermissionResult := map[string]interface{}{}
-	global.DB.Model(&models.UserPermission{}).Where("user_id=? and permission_id=? and identify_id=? and is_effective=1", userId, permissionId, identifyId).First(&userPermissionResult)
+	global.DB.Model(&models2.UserPermission{}).Where("user_id=? and permission_id=? and identify_id=? and is_effective=1", userId, permissionId, identifyId).First(&userPermissionResult)
 	if userPermissionResult != nil && len(userPermissionResult) != 0 {
 		return true
 	}
 	// 获取用户所在角色
 	var roleIds []int
-	global.DB.Model(models.UserRole{}).Where("user_id = ? and identify_id=?", userId, identifyId).Pluck("role_id", &roleIds)
+	global.DB.Model(models2.UserRole{}).Where("user_id = ? and identify_id=?", userId, identifyId).Pluck("role_id", &roleIds)
 	if len(roleIds) == 0 {
 		return false
 	}
 	// 如果是系统管理员,全部通过
 	var globalRoles []map[string]interface{}
-	global.DB.Model(&models.Role{}).Where("status =1 and type=? and identify_id=? and id in ?", models.ROLE_TYPE_SYSTEM, identifyId, roleIds).Find(&globalRoles)
+	global.DB.Model(&models2.Role{}).Where("status =1 and type=? and identify_id=? and id in ?", models2.ROLE_TYPE_SYSTEM, identifyId, roleIds).Find(&globalRoles)
 	if len(globalRoles) != 0 {
 		return true
 	}
@@ -223,14 +223,14 @@ func CheckUserHasPermission(userId int64, permissionCode string, identifyId int6
 // 判断角色是否有权限
 func CheckRoleHasPermission(roleId int64, permissionId int64, identifyId int64) bool {
 	//全局角色直接返回true
-	var roleInfo models.Role
-	global.DB.Model(&models.Role{}).Where("id=? and type=? and status =1 and identify_id=?", roleId, models.ROLE_TYPE_SYSTEM, identifyId).First(&roleInfo)
+	var roleInfo models2.Role
+	global.DB.Model(&models2.Role{}).Where("id=? and type=? and status =1 and identify_id=?", roleId, models2.ROLE_TYPE_SYSTEM, identifyId).First(&roleInfo)
 	if roleInfo.ID != 0 {
 		return true
 	}
 	// 非全局角色
-	var row models.RolePermission
-	global.DB.Model(&models.RolePermission{}).Where("role_id=? and permission_id=? and is_effective=1 and identify_id=?", gconv.Int64(roleId), permissionId, identifyId).First(&row)
+	var row models2.RolePermission
+	global.DB.Model(&models2.RolePermission{}).Where("role_id=? and permission_id=? and is_effective=1 and identify_id=?", gconv.Int64(roleId), permissionId, identifyId).First(&row)
 	//fmt.Println(row, "==row===")
 	if row.ID != 0 {
 		return true
@@ -242,7 +242,7 @@ func CheckRoleHasPermission(roleId int64, permissionId int64, identifyId int64) 
 func RoleAddPermission(roleId int64, permissionCodes []string, identifyId int64) error {
 	// 开始事务
 	tx := global.DB.Begin()
-	model := tx.Model(&models.RolePermission{})
+	model := tx.Model(&models2.RolePermission{})
 	// 先全部取消列表下对应的权限
 	rs := model.Where("role_id = ? and identify_id=?", roleId, identifyId).Update("is_effective", 0)
 	if rs.Error != nil {
@@ -250,7 +250,7 @@ func RoleAddPermission(roleId int64, permissionCodes []string, identifyId int64)
 	}
 	// 新增权限，存在先更新
 	updateDate := map[string]interface{}{
-		"is_effective": config.EFFECTIVE_YES,
+		"is_effective": consts.EFFECTIVE_YES,
 	}
 	permissionIds := GetPermissionIdsByPermissionCode(permissionCodes)
 	rs = model.Where("role_id = ? and permission_id in ? and identify_id=?", roleId, permissionIds, identifyId).Updates(updateDate)
@@ -260,7 +260,7 @@ func RoleAddPermission(roleId int64, permissionCodes []string, identifyId int64)
 	}
 	// 找出第一次新增的权限，插入
 	var hasPermission []int64
-	tx.Model(&models.RolePermission{}).Where("role_id = ? and identify_id=?", roleId, identifyId).Pluck("permission_id", &hasPermission)
+	tx.Model(&models2.RolePermission{}).Where("role_id = ? and identify_id=?", roleId, identifyId).Pluck("permission_id", &hasPermission)
 	//fmt.Println(hasPermission, "=========")
 	//return nil
 	newPermission := make([]map[string]interface{}, 0)
@@ -270,13 +270,13 @@ func RoleAddPermission(roleId int64, permissionCodes []string, identifyId int64)
 				"role_id":       roleId,
 				"permission_id": v,
 				"identify_id":   identifyId,
-				"is_effective":  config.EFFECTIVE_YES,
+				"is_effective":  consts.EFFECTIVE_YES,
 			})
 		}
 	}
 	//fmt.Println(newPermission, "newPermission=====")
 	if len(newPermission) > 0 {
-		model2 := tx.Model(&models.RolePermission{})
+		model2 := tx.Model(&models2.RolePermission{})
 		result := model2.Create(newPermission)
 		if result.Error != nil {
 			tx.Rollback()
@@ -291,7 +291,7 @@ func RoleAddPermission(roleId int64, permissionCodes []string, identifyId int64)
 // 获取角色下的权限
 func GetPermissionByRole(roleId int64, identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
-	global.DB.Model(&models.RolePermission{}).
+	global.DB.Model(&models2.RolePermission{}).
 		Select("permission.id,permission.permission_name,permission.permission_code,permission.type,permission.father_permission_code,permission.identify_id").
 		Joins("left join permission on role_permission.permission_id=permission.id").
 		Where("role_permission.role_id = ? and permission.status=1 and role_permission.identify_id=? and role_permission.is_effective=1", roleId, identifyId).Scan(&result)
@@ -301,6 +301,6 @@ func GetPermissionByRole(roleId int64, identifyId int64) []map[string]interface{
 // permission code  to permission id
 func GetPermissionIdsByPermissionCode(permissionCodes []string) []int64 {
 	var permissionIds []int64
-	global.DB.Model(&models.Permission{}).Where("permission_code in ? ", permissionCodes).Pluck("id", &permissionIds)
+	global.DB.Model(&models2.Permission{}).Where("permission_code in ? ", permissionCodes).Pluck("id", &permissionIds)
 	return permissionIds
 }

@@ -3,12 +3,11 @@ package user
 import (
 	"encoding/json"
 	"gin/api/admin/user/v1"
-	"gin/internal/common_config"
 	"gin/internal/global"
 	"gin/internal/library/jwt"
 	"gin/internal/library/vcrypto"
+	"gin/internal/models"
 	"gin/internal/modules/admin/v1/logic/common"
-	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/util/gconv"
@@ -64,7 +63,7 @@ func (a *userLogic) Create(param v1.CreateReq) (int64, error) {
 	uid := service.TableIds().GetAddId("user", param.IdentifyId)
 
 	//密码加密
-	key := gconv.String(common_config.Cfg.Login.Key)
+	key := gconv.String(global.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
 
 	data := models.User{
@@ -87,7 +86,7 @@ func (a *userLogic) Create(param v1.CreateReq) (int64, error) {
 
 func (a *userLogic) Update(param v1.UpdateReq) (int64, error) {
 	//密码加密
-	key := gconv.String(common_config.Cfg.Login.Key)
+	key := gconv.String(global.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
 	data := models.User{
 		Phone:      param.Phone,
@@ -133,7 +132,7 @@ func (a *userLogic) GetUserInfo(c *gin.Context) *v1.UserInfo {
 }
 
 func (a *userLogic) GetSecret(pwd string) string {
-	key := gconv.String(common_config.Cfg.Login.Key)
+	key := gconv.String(global.Cfg.Login.Key)
 	secretPwd := vcrypto.HexEnCrypt(pwd, key, vcrypto.DesCBCEncrypt)
 	return secretPwd
 }

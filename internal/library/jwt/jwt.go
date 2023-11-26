@@ -3,7 +3,7 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
-	"gin/internal/common_config"
+	"gin/internal/global"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gogf/gf/util/gconv"
 	"strings"
@@ -111,7 +111,7 @@ func (j *Jwt) CheckJwtString(input string) bool {
 
 // jwt-go
 func CreateJwtGoToken(audience string, id string) (string, error) {
-	expiresTime := time.Now().Unix() + gconv.Int64(common_config.Cfg.Login.UserTime)
+	expiresTime := time.Now().Unix() + gconv.Int64(global.Cfg.Login.UserTime)
 	claims := jwt.StandardClaims{
 		Audience:  audience,          // 受众
 		ExpiresAt: expiresTime,       // 失效时间
@@ -121,7 +121,7 @@ func CreateJwtGoToken(audience string, id string) (string, error) {
 		NotBefore: time.Now().Unix(), // 生效时间
 		Subject:   "login",           // 主题
 	}
-	var jwtSecret = []byte(gconv.String(common_config.Cfg.Login.Secret))
+	var jwtSecret = []byte(gconv.String(global.Cfg.Login.Secret))
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 	return token, err
@@ -129,7 +129,7 @@ func CreateJwtGoToken(audience string, id string) (string, error) {
 
 func ParseJwtGoToken(token string) (*jwt.StandardClaims, error) {
 	jwtToken, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (i interface{}, e error) {
-		return []byte(gconv.String(common_config.Cfg.Login.Secret)), nil
+		return []byte(gconv.String(global.Cfg.Login.Secret)), nil
 	})
 	if err == nil && jwtToken != nil {
 		if claim, ok := jwtToken.Claims.(*jwt.StandardClaims); ok && jwtToken.Valid {
