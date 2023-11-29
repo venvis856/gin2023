@@ -52,7 +52,7 @@ func SystemApi(platform string) {
 		//Command(" gf build cmd\\cli\\main.go -s linux  -a amd64  -p build -n cli")
 		Command("xcopy build\\linux_amd64\\ release\\  /y /e /i /q")
 
-		//Command("xcopy consts release\\consts  /y /e /i /q")
+		//Command("xcopy common_config release\\common_config  /y /e /i /q")
 
 		// window 下tar有时会报错permission denied，所以放在其他目录
 		Command("cd release && tar -zcvf ..\\build\\release.tar.gz .\\*")
@@ -67,7 +67,7 @@ func SystemApi(platform string) {
 		setEnv := fmt.Sprintf("CGO_ENABLED=0 GOOS=%v GOARCH=amd64", buildPlatForm)
 		Command(" " + setEnv + "  go build -o release/system_api ./main.go")
 		//Command(" " + setEnv + "  go build -o release/cli ./cmd/cli/main.go")
-		//Command("cp -r consts release/consts")
+		//Command("cp -r common_config release/common_config")
 		Command("cd release && tar -zcvf release.tar.gz ./*")
 		Command("mv release/release.tar.gz ./system_api_release.tar.gz")
 	}

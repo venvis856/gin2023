@@ -1,4 +1,4 @@
-package ctrl
+package ctrl_admin
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct{}
+type UserCtrl struct{}
 
-func (a *UserHandler) Items(c *gin.Context) {
+func (a *UserCtrl) Items(c *gin.Context) {
 	var param v1.ItemReq
 
 	if err := c.ShouldBind(&param); err != nil {
@@ -26,7 +26,7 @@ func (a *UserHandler) Items(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (*UserHandler) Info(c *gin.Context) {
+func (*UserCtrl) Info(c *gin.Context) {
 	var param v1.InfoReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
@@ -40,7 +40,7 @@ func (*UserHandler) Info(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (*UserHandler) Create(c *gin.Context) {
+func (*UserCtrl) Create(c *gin.Context) {
 	var param v1.CreateReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
@@ -55,7 +55,7 @@ func (*UserHandler) Create(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (*UserHandler) Update(c *gin.Context) {
+func (*UserCtrl) Update(c *gin.Context) {
 	var param v1.UpdateReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
@@ -70,7 +70,7 @@ func (*UserHandler) Update(c *gin.Context) {
 }
 
 // 软删除
-func (*UserHandler) Delete(c *gin.Context) {
+func (*UserCtrl) Delete(c *gin.Context) {
 	var param v1.DeleteReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
@@ -85,7 +85,7 @@ func (*UserHandler) Delete(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (a *UserHandler) GetSecret(c *gin.Context) {
+func (a *UserCtrl) GetSecret(c *gin.Context) {
 	var param v1.SecretReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))

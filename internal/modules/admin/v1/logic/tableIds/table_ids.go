@@ -2,7 +2,7 @@ package tableIds
 
 import (
 	"gin/internal/global"
-	"gin/internal/models"
+	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gogf/gf/util/gconv"
 )

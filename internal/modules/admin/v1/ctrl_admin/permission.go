@@ -1,24 +1,23 @@
-package ctrl
+package ctrl_admin
 
 import (
 	"fmt"
-	"gin/api/admin/role/v1"
+	"gin/api/admin/permission/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gin-gonic/gin"
 )
 
-type RoleHandler struct{}
+type PermissionCtrl struct{}
 
-func (*RoleHandler) Items(c *gin.Context) {
+func (*PermissionCtrl) Items(c *gin.Context) {
 	var param v1.ItemReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-
-	rs, err := service.Role().Items(param)
+	rs, err := service.Permission().Items(param)
 	if err != nil {
 		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
 		return
@@ -26,23 +25,14 @@ func (*RoleHandler) Items(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (*RoleHandler) Info(c *gin.Context) {
-	var param v1.InfoReq
-	if err := c.ShouldBind(&param); err != nil {
-		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
-		return
-	}
-	result := service.Role().Info(param)
-	global.Response.Success(c, result)
-}
-
-func (*RoleHandler) Create(c *gin.Context) {
+// 新增权限
+func (*PermissionCtrl) Create(c *gin.Context) {
 	var param v1.CreateReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	rs, err := service.Role().Create(param)
+	rs, err := service.Permission().Create(param)
 	if err != nil {
 		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
 		return
@@ -50,13 +40,13 @@ func (*RoleHandler) Create(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (*RoleHandler) Update(c *gin.Context) {
+func (*PermissionCtrl) Update(c *gin.Context) {
 	var param v1.UpdateReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	rs, err := service.Role().Update(param)
+	rs, err := service.Permission().Update(param)
 	if err != nil {
 		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
 		return
@@ -64,14 +54,14 @@ func (*RoleHandler) Update(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-// 软删除
-func (*RoleHandler) Delete(c *gin.Context) {
+// 删除权限
+func (*PermissionCtrl) Delete(c *gin.Context) {
 	var param v1.DeleteReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	rs, err := service.Role().Delete(param)
+	rs, err := service.Permission().Delete(c, param)
 	if err != nil {
 		global.Response.Error(c, errcode.ERROR_SERVER, err.Error())
 		return

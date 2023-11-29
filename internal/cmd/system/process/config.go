@@ -14,7 +14,7 @@ import (
 	"sort"
 )
 
-var DefaultCfgFilename = "consts.yaml"
+var DefaultCfgFilename = "common_config.yaml"
 
 // SaveConfigOption is a function that updates the options for SaveConfig.
 type SaveConfigOption func(*SaveConfigOptions)

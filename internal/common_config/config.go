@@ -1,4 +1,4 @@
-package config
+package common_config
 
 import (
 	"gin/internal/library/db"

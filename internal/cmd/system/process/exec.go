@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"gin/internal/cmd/system/cfgstruct"
-	"gin/internal/config"
+	"gin/internal/common_config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -41,7 +41,7 @@ func Viper(cmd *cobra.Command) (*viper.Viper, error) {
 }
 
 // ViperWithCustomConfig returns the appropriate *viper.Viper for the command, creating if necessary. Custom
-// consts load logic can be defined with "loadConfig" parameter.
+// common_config load logic can be defined with "loadConfig" parameter.
 func ViperWithCustomConfig(cmd *cobra.Command, loadConfig func(cmd *cobra.Command, vip *viper.Viper) error) (*viper.Viper, error) {
 	commandMtx.Lock()
 	defer commandMtx.Unlock()
@@ -73,9 +73,9 @@ func ViperWithCustomConfig(cmd *cobra.Command, loadConfig func(cmd *cobra.Comman
 	return vip, nil
 }
 
-// LoadConfig 从配置的--consts 配置文件读取配置到viper
+// LoadConfig 从配置的--common_config 配置文件读取配置到viper
 func LoadConfig(cmd *cobra.Command, vip *viper.Viper) error {
-	cfgFlag := cmd.Flags().Lookup("consts")
+	cfgFlag := cmd.Flags().Lookup("common_config")
 	if cfgFlag != nil && cfgFlag.Value.String() != "" {
 		path := os.ExpandEnv(cfgFlag.Value.String())
 		if FileExists(path) {
@@ -257,6 +257,6 @@ func FileExists(path string) bool {
 }
 
 func cmdVersion(cmd *cobra.Command, args []string) (err error) {
-	fmt.Println(config.Version)
+	fmt.Println(common_config.Version)
 	return nil
 }

@@ -1,10 +1,10 @@
 package global
 
-import "gin/internal/config"
+import "gin/internal/common_config"
 
-var Cfg *config.Config
+var Cfg *common_config.Config
 
-func InitConfig(conf *config.Config) (err error) {
+func InitConfig(conf *common_config.Config) (err error) {
 	Cfg = conf
 	return
 }

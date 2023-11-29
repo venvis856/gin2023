@@ -1,4 +1,4 @@
-package consts
+package config
 
 const (
 	EFFECTIVE_YES = 1

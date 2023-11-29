@@ -1,4 +1,4 @@
-package ctrl
+package ctrl_admin
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type LoginHandler struct{}
+type LoginCtrl struct{}
 
-func (a *LoginHandler) Login(c *gin.Context) {
+func (a *LoginCtrl) Login(c *gin.Context) {
 	var param v1.LoginReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
@@ -25,6 +25,6 @@ func (a *LoginHandler) Login(c *gin.Context) {
 	global.Response.Success(c, rs)
 }
 
-func (a *LoginHandler) Logout(c *gin.Context) {
+func (a *LoginCtrl) Logout(c *gin.Context) {
 	global.Response.Success(c, "")
 }

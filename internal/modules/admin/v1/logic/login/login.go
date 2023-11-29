@@ -7,7 +7,7 @@ import (
 	"gin/internal/global"
 	"gin/internal/library/jwt"
 	"gin/internal/library/vcrypto"
-	models2 "gin/internal/models"
+	"gin/internal/modules/admin/v1/models"
 	"gin/internal/modules/admin/v1/service"
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/util/gconv"
@@ -33,8 +33,8 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 	key := gconv.String(global.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
 
-	var userInfo models2.User
-	model := global.DB.Model(&models2.User{})
+	var userInfo models.User
+	model := global.DB.Model(&models.User{})
 	model.Select("id as user_id, uid,username,phone,realname,email,create_time")
 	model.Where("status != 9 and password = ?", pwd)
 
@@ -53,18 +53,18 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 
 	// 用户权限表和用户角色表有 身份的都统计
 	var userRoleIdentifySlice []int64
-	global.DB.Model(&models2.UserRole{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userRoleIdentifySlice)
+	global.DB.Model(&models.UserRole{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userRoleIdentifySlice)
 
 	var userIdentifySlice []int64
-	global.DB.Model(&models2.UserPermission{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userIdentifySlice)
+	global.DB.Model(&models.UserPermission{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userIdentifySlice)
 
 	identifySlice := append(userRoleIdentifySlice, userIdentifySlice...)
 	sort.Slice(identifySlice, func(i, j int) bool {
 		return identifySlice[i] < identifySlice[j]
 	})
 
-	var identifyList []models2.Identify
-	global.DB.Model(&models2.Identify{}).Where("status != 9 and id in ?", identifySlice).Find(&identifyList, "id,identify_name,type,father_identify_id,identify_code,status,create_time,update_time")
+	var identifyList []models.Identify
+	global.DB.Model(&models.Identify{}).Where("status != 9 and id in ?", identifySlice).Find(&identifyList, "id,identify_name,type,father_identify_id,identify_code,status,create_time,update_time")
 
 	// token
 	jsonResult, err := json.Marshal(userInfo)
@@ -87,9 +87,9 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 }
 
 func (a *loginLogic) LoginLog(c *gin.Context, userId int64) {
-	data := models2.User{
+	data := models.User{
 		UserIp:    c.ClientIP(),
 		LoginTime: carbon.Now().Timestamp(),
 	}
-	global.DB.Model(&models2.User{}).Where("id = ?", userId).Updates(&data)
+	global.DB.Model(&models.User{}).Where("id = ?", userId).Updates(&data)
 }

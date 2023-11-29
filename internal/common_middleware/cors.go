@@ -1,4 +1,4 @@
-package middleware
+package common_middleware
 
 import (
 	"github.com/gin-gonic/gin"

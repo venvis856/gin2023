@@ -1,19 +1,19 @@
-package ctrl
+package ctrl_admin
 
 import (
 	"fmt"
 	"gin/api/admin/select/v1"
 	"gin/internal/global"
 	"gin/internal/global/errcode"
-	models2 "gin/internal/models"
+	"gin/internal/modules/admin/v1/models"
 	"github.com/gin-gonic/gin"
 )
 
-type SelectHandler struct{}
+type SelectCtrl struct{}
 
 // 标识列表
-func (*SelectHandler) GetIdentifySelectList(c *gin.Context) {
-	model := global.DB.Model(&models2.Identify{})
+func (*SelectCtrl) GetIdentifySelectList(c *gin.Context) {
+	model := global.DB.Model(&models.Identify{})
 	model.Select("id,identify_name")
 	model.Where("status = 1")
 	var result []map[string]interface{}
@@ -23,13 +23,13 @@ func (*SelectHandler) GetIdentifySelectList(c *gin.Context) {
 }
 
 // 角色列表
-func (*SelectHandler) GetRoleSelectList(c *gin.Context) {
+func (*SelectCtrl) GetRoleSelectList(c *gin.Context) {
 	var param v1.GetRoleSelectListReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	model := global.DB.Model(&models2.Role{})
+	model := global.DB.Model(&models.Role{})
 	model.Select("id,vid,role_name,type")
 	model.Where("status =1  and identify_id=?", param.IdentifyId)
 	var result []map[string]interface{}
@@ -39,7 +39,7 @@ func (*SelectHandler) GetRoleSelectList(c *gin.Context) {
 }
 
 // 派出所列表
-func (*SelectHandler) GetPoliceIdentifySelectList(c *gin.Context) {
+func (*SelectCtrl) GetPoliceIdentifySelectList(c *gin.Context) {
 	var param struct {
 		//IdentifyId int64 `form:"identify_id" json:"identify_id" binding:"required"`
 	}
@@ -47,7 +47,7 @@ func (*SelectHandler) GetPoliceIdentifySelectList(c *gin.Context) {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	model := global.DB.Model(&models2.Identify{})
+	model := global.DB.Model(&models.Identify{})
 	model.Select("id,identify_name,root,type,father_identify_id")
 	model.Where("status = 1 and type=2")
 	var result []map[string]interface{}
@@ -56,13 +56,13 @@ func (*SelectHandler) GetPoliceIdentifySelectList(c *gin.Context) {
 	global.Response.Success(c, result)
 }
 
-func (*SelectHandler) GetUserSelectByIdentify(c *gin.Context) {
+func (*SelectCtrl) GetUserSelectByIdentify(c *gin.Context) {
 	var param v1.GetUserSelectByIdentifyReq
 	if err := c.ShouldBind(&param); err != nil {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-	model := global.DB.Model(&models2.User{})
+	model := global.DB.Model(&models.User{})
 	model.Select("id,username,phone,realname")
 	model.Where("status = 1 and identify_id=?", param.IdentifyId)
 	var result []map[string]interface{}
