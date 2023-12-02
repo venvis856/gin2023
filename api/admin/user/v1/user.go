@@ -43,7 +43,7 @@ type DeleteReq struct {
 type UserInfo struct {
 	CreateTime   int64  `json:"create_time"`
 	Email        string `json:"email"`
-	UserId       int64  `json:"id"`
+	ID           int64  `json:"id"`
 	IdentifyId   int64  `json:"identify_id"`
 	IdentifyName string `json:"identify_name"`
 	IdentifyType int    `json:"identify_type"`
@@ -52,7 +52,7 @@ type UserInfo struct {
 	Username     string `json:"username"`
 	Threshold    int    `json:"threshold"`
 	Vid          int    `json:"vid"`
-	Scene        uint8  `json:"scene"`
+
 }
 
 type SecretReq struct {

@@ -23,10 +23,6 @@ func New() service.PermissionInterface {
 	return &permissionLogic{}
 }
 
-func (a *permissionLogic) CheckAuth(c *gin.Context, authCode string, IdentifyId int64) bool {
-	userInfo := service.User().GetUserInfo(c)
-	return service.PermissionOperate().CheckUserHasPermission(int64(userInfo.UserId), authCode, IdentifyId)
-}
 
 func (a *permissionLogic) Items(param v1.ItemReq) (map[string]interface{}, error) {
 	model := global.DB.Model(&models.Permission{})

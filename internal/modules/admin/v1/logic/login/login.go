@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/golang-module/carbon"
-	"sort"
 )
 
 type (
@@ -35,7 +34,7 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 
 	var userInfo models.User
 	model := global.DB.Model(&models.User{})
-	model.Select("id as user_id, uid,username,phone,realname,email,create_time")
+	model.Select("id, uid,username,phone,realname,email,create_time")
 	model.Where("status != 9 and password = ?", pwd)
 
 	if param.Phone != "" {
@@ -52,19 +51,7 @@ func (a *loginLogic) Login(c *gin.Context, param v1.LoginReq) (map[string]interf
 	}
 
 	// 用户权限表和用户角色表有 身份的都统计
-	var userRoleIdentifySlice []int64
-	global.DB.Model(&models.UserRole{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userRoleIdentifySlice)
-
-	var userIdentifySlice []int64
-	global.DB.Model(&models.UserPermission{}).Where("user_id = ?", userInfo.ID).Pluck("identify_id", &userIdentifySlice)
-
-	identifySlice := append(userRoleIdentifySlice, userIdentifySlice...)
-	sort.Slice(identifySlice, func(i, j int) bool {
-		return identifySlice[i] < identifySlice[j]
-	})
-
-	var identifyList []models.Identify
-	global.DB.Model(&models.Identify{}).Where("status != 9 and id in ?", identifySlice).Find(&identifyList, "id,identify_name,type,father_identify_id,identify_code,status,create_time,update_time")
+	identifyList := service.User().GetUserIdentify(c, userInfo.ID)
 
 	// token
 	jsonResult, err := json.Marshal(userInfo)

@@ -4,6 +4,7 @@ import (
 	"gin/internal/common_config"
 	"gin/internal/common_middleware"
 	"gin/internal/modules/admin/v1/ctrl_admin"
+	"gin/internal/modules/admin/v1/ctrl_page"
 	_ "gin/internal/modules/admin/v1/logic"
 	"gin/internal/modules/admin/v1/middleware"
 	"github.com/gin-gonic/gin"
@@ -65,6 +66,11 @@ func InitAdminRoutes(router *gin.Engine) {
 		routerGroup.Any("identify/create", middleware.CheckPermission("web_identity_add"), identifyCtrl.Create)
 		routerGroup.Any("identify/update", middleware.CheckPermission("web_identity_update"), identifyCtrl.Update)
 		routerGroup.Any("identify/delete", middleware.CheckPermission("web_identity_delete"), identifyCtrl.Delete)
+
+		// 业务
+		siteCtrl := new(ctrl_page.SiteCtrl)
+		routerGroup.Any("select/site", siteCtrl.SelectList)
+
 
 	}
 }

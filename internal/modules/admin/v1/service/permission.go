@@ -7,7 +7,6 @@ import (
 )
 
 type PermissionInterface interface {
-	CheckAuth(c *gin.Context, authCode string, IdentifyId int64) bool
 	Items(param v1.ItemReq) (map[string]interface{}, error)
 	Create(param v1.CreateReq) (int64, error)
 	Update(param v1.UpdateReq) (int64, error)

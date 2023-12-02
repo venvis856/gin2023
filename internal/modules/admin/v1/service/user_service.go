@@ -3,6 +3,7 @@ package service
 import (
 	"gin/api/admin/user/v1"
 	"gin/internal/library/handlePanic"
+	"gin/internal/modules/admin/v1/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +15,7 @@ type UserInterface interface {
 	Update(param v1.UpdateReq) (int64, error)
 	Delete(param v1.DeleteReq) (int64, error)
 	GetSecret(pwd string) string
+	GetUserIdentify(c *gin.Context, userId int64) []models.Identify
 }
 
 var userObj UserInterface

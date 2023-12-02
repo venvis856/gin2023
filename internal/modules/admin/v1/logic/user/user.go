@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gogf/gf/util/gconv"
 	"github.com/golang-module/carbon"
+	"sort"
 )
 
 type (
@@ -121,7 +122,7 @@ func (a *userLogic) GetUserInfo(c *gin.Context) *v1.UserInfo {
 	token := c.Request.Header.Get("token")
 	tokenInfo, err := jwt.ParseJwtGoToken(token)
 	if err != nil {
-		return userInfo
+		return nil
 	}
 
 	err = json.Unmarshal([]byte(tokenInfo.Audience), &userInfo)
@@ -129,6 +130,28 @@ func (a *userLogic) GetUserInfo(c *gin.Context) *v1.UserInfo {
 		return nil
 	}
 	return userInfo
+}
+
+func (a *userLogic) GetUserIdentify(c *gin.Context, userId int64) []models.Identify {
+	if userId == 0 {
+		userInfo := a.GetUserInfo(c)
+		userId = userInfo.ID
+	}
+
+	var userRoleIdentifySlice []int64
+	global.DB.Model(&models.UserRole{}).Where("user_id = ?", userId).Pluck("identify_id", &userRoleIdentifySlice)
+
+	var userIdentifySlice []int64
+	global.DB.Model(&models.UserPermission{}).Where("user_id = ?", userId).Pluck("identify_id", &userIdentifySlice)
+
+	identifySlice := append(userRoleIdentifySlice, userIdentifySlice...)
+	sort.Slice(identifySlice, func(i, j int) bool {
+		return identifySlice[i] < identifySlice[j]
+	})
+
+	var identifyList []models.Identify
+	global.DB.Model(&models.Identify{}).Select("id,identify_name,type,father_identify_id,identify_code,status,create_time,update_time").Where("status != 9 and id in ?", identifySlice).Find(&identifyList)
+	return identifyList
 }
 
 func (a *userLogic) GetSecret(pwd string) string {

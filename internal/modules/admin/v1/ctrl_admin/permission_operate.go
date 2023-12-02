@@ -68,10 +68,8 @@ func (*PermissionCtrl) GetAllPermissionByUser(c *gin.Context) {
 		global.Response.Error(c, errcode.ERROR_PARAMS, fmt.Sprintf("param err: %v", err))
 		return
 	}
-
 	userInfo := service.User().GetUserInfo(c)
-
-	result := service.PermissionOperate().GetAllPermissionByUser(gconv.Int64(userInfo.UserId), gconv.Int64(param.IdentifyId))
+	result := service.PermissionOperate().GetAllPermissionByUser(gconv.Int64(userInfo.ID), gconv.Int64(param.IdentifyId))
 	global.Response.Success(c, result)
 }
 
@@ -90,7 +88,7 @@ func (*PermissionCtrl) GetMenuByUser(c *gin.Context) {
 	}
 
 	userInfo := service.User().GetUserInfo(c)
-	permissionList := service.PermissionOperate().GetAllPermissionByUser(int64(userInfo.UserId), param.IdentifyId)
+	permissionList := service.PermissionOperate().GetAllPermissionByUser(int64(userInfo.ID), param.IdentifyId)
 	// 限制菜单
 	var result []map[string]interface{}
 	for _, v := range permissionList {
