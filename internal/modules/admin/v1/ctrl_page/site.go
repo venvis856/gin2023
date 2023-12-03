@@ -15,7 +15,7 @@ func (a *SiteCtrl) SelectList(c *gin.Context) {
 	for _, v := range identifyList {
 		IdentifyIds = append(IdentifyIds, v.ID)
 	}
-	var siteList []models.Site
-	global.DB.Model(&models.Site{}).Where("identify_id in (?)", IdentifyIds).Find(&siteList)
+	var siteList []models.CmsSite
+	global.DB.Model(&models.CmsSite{}).Where("identify_id in (?)", IdentifyIds).Find(&siteList)
 	global.Response.Success(c, siteList)
 }

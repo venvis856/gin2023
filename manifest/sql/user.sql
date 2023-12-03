@@ -30,7 +30,7 @@ CREATE TABLE `permission`
     UNIQUE KEY `permission_code` ( `permission_code` ) USING BTREE
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '权限表';
 
-DROP TABLE IF EXISTS USER;
+DROP TABLE IF EXISTS user;
 CREATE TABLE `user`
 (
     `id`          INT ( 11 ) NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
@@ -75,8 +75,8 @@ CREATE TABLE `user_role`
 (
     `id`           INT ( 11 ) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `identify_id`  INT ( 11 ) UNSIGNED NOT NULL COMMENT '标识id',
-    `user_id`      INT ( 11 ) UNSIGNED NOT NULL COMMENT 'user id',
-    `role_id`      INT ( 11 ) UNSIGNED NOT NULL COMMENT 'role id',
+    `user_id`      INT ( 11 ) UNSIGNED NOT NULL COMMENT 'user_service id',
+    `role_id`      INT ( 11 ) UNSIGNED NOT NULL COMMENT 'role_service id',
     `is_effective` INT ( 2 ) UNSIGNED DEFAULT 0 COMMENT '是否有效',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `uniq_identify_user_role` ( `identify_id`, `user_id`, `role_id` ) USING BTREE
@@ -129,13 +129,48 @@ CREATE TABLE `table_ids`
 ) ENGINE = INNODB AUTO_INCREMENT = 47 DEFAULT CHARSET = utf8mb4 COMMENT = '虚拟id表';
 
 
----------------------------------
+# ---------------------------------
 insert into permission(permission_name,permission_code,type,father_permission_code,status) values('设置','set',1,'0',1);
 -- SET @id = LAST_INSERT_ID();
 insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户管理','user_list',1,'set',1);
-insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色管理','role_list',1,'set',1);
-insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限管理','permission_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户详情','user_info',1,'user_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户新增','user_add',1,'user_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户修改','user_update',1,'user_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户删除','user_delete',1,'user_list',1);
 
-insert into permission(permission_name,permission_code,type,father_permission_code,status) values('系统','system',1,'',1);
-insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符','identify_list',1,'system',1);
-insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份权限关系','identify_permission',1,'system',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色管理','role_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色详情','role_info',1,'role_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色新增','role_add',1,'role_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色修改','role_update',1,'role_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色删除','role_delete',1,'role_list',1);
+
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限管理','permission_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限详情','permission_info',1,'permission_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限新增','permission_add',1,'permission_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限修改','permission_update',1,'permission_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('权限删除','permission_delete',1,'permission_list',1);
+
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符号列表','identify_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符号详情','identify_info',1,'identify_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符号新增','identify_add',1,'identify_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符号修改','identify_update',1,'identify_list',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('身份标识符号删除','identify_delete',1,'identify_list',1);
+
+# ---- 标识拥有权限关系表
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('标识拥有权限关系列表','identify_permission_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('标识拥有权限关系新增','identify_permission_add',1,'identify_permission_list',1);
+
+# ---- 角色权限关系表
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色拥有权限关系列表','role_permission_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('角色拥有权限关系新增','role_permission_add',1,'role_permission_list',1);
+
+# ---- 用户角色关系表
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户角色关系列表','user_role_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户角色关系新增','user_role_add',1,'user_role_list',1);
+
+# ---- 用户权限关系表
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户权限关系列表','user_permission_list',1,'set',1);
+insert into permission(permission_name,permission_code,type,father_permission_code,status) values('用户权限关系新增','user_permission_add',1,'user_permission_list',1);
+
+
+

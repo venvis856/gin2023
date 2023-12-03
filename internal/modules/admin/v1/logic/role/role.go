@@ -52,7 +52,7 @@ func (a *roleLogic) Info(param v1.InfoReq) map[string]interface{} {
 }
 
 func (a *roleLogic) Create(param v1.CreateReq) (int64, error) {
-	uid := service.TableIds().GetAddId("role", param.IdentifyId)
+	uid := service.TableIds().GetAddId("role_service", param.IdentifyId)
 
 	data := models.Role{
 		RoleName:   param.RoleName,

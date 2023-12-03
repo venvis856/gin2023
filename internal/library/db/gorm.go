@@ -14,7 +14,7 @@ type Config struct {
 	Port          int    `help:"数据库端口" devDefault:"3306" testDefault:"3307" releaseDefault:"3306"`
 	Username      string `help:"数据库帐号" default:"root"`
 	Password      string `help:"数据库密码" default:"root"`
-	Database      string `help:"数据库名称" default:"cms"`
+	Database      string `help:"数据库名称" default:"base"`
 	TablePrefix   string `help:"数据库表前缀" default:""`
 	Charset       string `help:"数据库编码" default:"utf8mb4"`
 	SingularTable bool   `help:"是否使用单数表名" default:"true"`
@@ -30,7 +30,7 @@ func NewGormDB(conf *Config) (DB *gorm.DB, err error) {
 	DB, err = gorm.Open(mysql.Open(conf.Dsn()), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   conf.TablePrefix,   // 表名前缀，`User` 的表名应该是 `t_users`
-			SingularTable: conf.SingularTable, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `user`
+			SingularTable: conf.SingularTable, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `user_service`
 		},
 		Logger: logger.Default.LogMode(logger.Info), // 打印日志，不需要注释
 	})

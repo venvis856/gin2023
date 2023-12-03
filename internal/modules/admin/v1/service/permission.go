@@ -17,7 +17,7 @@ var permissionObj PermissionInterface
 
 func Permission() PermissionInterface {
 	if permissionObj == nil {
-		handlePanic.Panic("permission service panic")
+		handlePanic.Panic("permission_service service panic")
 	}
 	return permissionObj
 }

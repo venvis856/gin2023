@@ -41,7 +41,7 @@ func Viper(cmd *cobra.Command) (*viper.Viper, error) {
 }
 
 // ViperWithCustomConfig returns the appropriate *viper.Viper for the command, creating if necessary. Custom
-// common_config load logic can be defined with "loadConfig" parameter.
+// common_config load service can be defined with "loadConfig" parameter.
 func ViperWithCustomConfig(cmd *cobra.Command, loadConfig func(cmd *cobra.Command, vip *viper.Viper) error) (*viper.Viper, error) {
 	commandMtx.Lock()
 	defer commandMtx.Unlock()

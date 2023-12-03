@@ -36,14 +36,14 @@ func (*permissionOperateLogic) GetAllPermissionCodes() []string {
 	return result
 }
 
-// 获取某个 identify 下的所有权限
+// 获取某个 identify_service 下的所有权限
 func (*permissionOperateLogic) GetAllPermissionByIdentify(identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
 	global.DB.Model(&models.IdentifyPermission{}).Where("identify_id=? and is_effective = ?", identifyId, config.EFFECTIVE_YES).Find(&result)
 	return result
 }
 
-// identify 添加权限
+// identify_service 添加权限
 func (a *permissionOperateLogic) IdentifyAddPermission(identifyId int64, permissionCodes []string) error {
 	// 开始事务
 	tx := global.DB.Begin()
@@ -144,9 +144,9 @@ func (a *permissionOperateLogic) UserAddPermission(userId int64, permissionCodes
 func (*permissionOperateLogic) GetPermissionByUser(userId int64, identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
 	global.DB.Model(&models.UserPermission{}).
-		Select("permission.id,permission.permission_name,permission.permission_code,permission.type,permission.father_permission_code,permission.identify_id").
-		Joins("left join permission on user_permission.permission_id=permission.id").
-		Where("user_permission.user_id = ? and permission.status=1 and user_permission.identify_id=? and user_permission.is_effective=1", userId, identifyId).Find(&result)
+		Select("permission_service.id,permission_service.permission_name,permission_service.permission_code,permission_service.type,permission_service.father_permission_code,permission_service.identify_id").
+		Joins("left join permission_service on user_permission.permission_id=permission_service.id").
+		Where("user_permission.user_id = ? and permission_service.status=1 and user_permission.identify_id=? and user_permission.is_effective=1", userId, identifyId).Find(&result)
 	return result
 }
 
@@ -303,13 +303,13 @@ func (a *permissionOperateLogic) RoleAddPermission(roleId int64, permissionCodes
 func (*permissionOperateLogic) GetPermissionByRole(roleId int64, identifyId int64) []map[string]interface{} {
 	var result []map[string]interface{}
 	global.DB.Model(&models.RolePermission{}).
-		Select("permission.id,permission.permission_name,permission.permission_code,permission.type,permission.father_permission_code,permission.identify_id").
-		Joins("left join permission on role_permission.permission_id=permission.id").
-		Where("role_permission.role_id = ? and permission.status=1 and role_permission.identify_id=? and role_permission.is_effective=1", roleId, identifyId).Scan(&result)
+		Select("permission_service.id,permission_service.permission_name,permission_service.permission_code,permission_service.type,permission_service.father_permission_code,permission_service.identify_id").
+		Joins("left join permission_service on role_permission.permission_id=permission_service.id").
+		Where("role_permission.role_id = ? and permission_service.status=1 and role_permission.identify_id=? and role_permission.is_effective=1", roleId, identifyId).Scan(&result)
 	return result
 }
 
-// permission code  to permission id
+// permission_service code  to permission_service id
 func (*permissionOperateLogic) GetPermissionIdsByPermissionCode(permissionCodes []string) []int64 {
 	var permissionIds []int64
 	global.DB.Model(&models.Permission{}).Where("permission_code in ? ", permissionCodes).Pluck("id", &permissionIds)

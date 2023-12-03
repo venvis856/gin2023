@@ -75,7 +75,7 @@ func (*PermissionCtrl) GetAllPermissionByUser(c *gin.Context) {
 
 // 获取所有权限列表
 //func (*PermissionHandler) GetAllPermission(c *gin.Context) {
-//	result := permission.GetAllPermission()
+//	result := permission_service.GetAllPermission()
 //	global.Response.Json(c, global.HTTP_SUCCESS, global.SUCCESS, "", result)
 //}
 

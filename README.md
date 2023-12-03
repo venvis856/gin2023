@@ -9,3 +9,6 @@
 ### 开发命令
 
 1. 根目录下执行 go generate, 更新errcode错误信息
+
+### 权限设计
+![img.png](img.png)

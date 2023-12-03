@@ -61,7 +61,7 @@ func (a *userLogic) Info(param v1.InfoReq) (map[string]interface{}, error) {
 
 func (a *userLogic) Create(param v1.CreateReq) (int64, error) {
 
-	uid := service.TableIds().GetAddId("user", param.IdentifyId)
+	uid := service.TableIds().GetAddId("user_service", param.IdentifyId)
 
 	//密码加密
 	key := gconv.String(global.Cfg.Login.Key)

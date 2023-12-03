@@ -31,7 +31,7 @@ func CheckPermission(permissionCodes ...string) gin.HandlerFunc {
 			return
 		}
 
-		// 获取 identify list
+		// 获取 identify_service list
 		identifyList := service.User().GetUserIdentify(c, userInfo.ID)
 		if len(identifyList) == 0 {
 			global.Response.Error(c, errcode.ERROR_PARAMS, "无此系统权限")
@@ -39,6 +39,7 @@ func CheckPermission(permissionCodes ...string) gin.HandlerFunc {
 			return
 		}
 		bol := false
+		fmt.Println(userInfo.ID, permissionCodes, identifyList,"=====22222222222222222222222")
 		for _, v := range permissionCodes {
 			for _, identify := range identifyList {
 				fmt.Println(userInfo.ID, v, identify.ID, "=====code")

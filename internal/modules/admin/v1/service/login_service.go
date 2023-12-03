@@ -14,7 +14,7 @@ var loginObj LoginInterface
 
 func Login() LoginInterface {
 	if loginObj == nil {
-		handlePanic.Panic("login service panic")
+		handlePanic.Panic("login_service service panic")
 	}
 	return loginObj
 }

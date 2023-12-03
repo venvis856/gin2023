@@ -49,7 +49,7 @@ func SaveConfigRemovingDeprecated() SaveConfigOption {
 	}
 }
 
-// SaveConfig will save only the user-specific flags with default values to
+// SaveConfig will save only the user_service-specific flags with default values to
 // outfile with specific values specified in 'overrides' overridden.
 func SaveConfig(cmd *cobra.Command, outfile string, opts ...SaveConfigOption) error {
 	// 1. 设置要替换的参数选贤
@@ -111,7 +111,7 @@ func SaveConfig(cmd *cobra.Command, outfile string, opts ...SaveConfigOption) er
 				changed = f.Changed || f.Value.String() != f.DefValue
 				setup = readBoolAnnotation(f, "setup")
 				hidden = readBoolAnnotation(f, "hidden")
-				user = readBoolAnnotation(f, "user")
+				user = readBoolAnnotation(f, "user_service")
 				deprecated = readBoolAnnotation(f, "deprecated")
 				source = readSourceAnnotation(f)
 				comment = f.Usage

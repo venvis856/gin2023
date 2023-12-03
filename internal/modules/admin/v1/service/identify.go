@@ -17,7 +17,7 @@ var identifyObj IdentifyInterface
 
 func Identify() IdentifyInterface {
 	if identifyObj == nil {
-		handlePanic.Panic("identify service panic")
+		handlePanic.Panic("identify_service service panic")
 	}
 	return identifyObj
 }

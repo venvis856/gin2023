@@ -22,7 +22,7 @@ var userObj UserInterface
 
 func User() UserInterface {
 	if userObj == nil {
-		handlePanic.Panic("user service panic")
+		handlePanic.Panic("user_service service panic")
 	}
 	return userObj
 }

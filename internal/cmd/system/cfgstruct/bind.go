@@ -222,8 +222,8 @@ func bindConfig(flags FlagSet, prefix string, val reflect.Value, vars map[string
 			if onlyForSetup {
 				SetBoolAnnotation(flags, flagName, "setup", true)
 			}
-			if field.Tag.Get("user") == "true" {
-				SetBoolAnnotation(flags, flagName, "user", true)
+			if field.Tag.Get("user_service") == "true" {
+				SetBoolAnnotation(flags, flagName, "user_service", true)
 			}
 			if field.Tag.Get("hidden") == "true" {
 				markHidden = true
@@ -327,8 +327,8 @@ func bindConfig(flags FlagSet, prefix string, val reflect.Value, vars map[string
 			if onlyForSetup {
 				SetBoolAnnotation(flags, flagName, "setup", true)
 			}
-			if field.Tag.Get("user") == "true" {
-				SetBoolAnnotation(flags, flagName, "user", true)
+			if field.Tag.Get("user_service") == "true" {
+				SetBoolAnnotation(flags, flagName, "user_service", true)
 			}
 
 			markHidden := false
@@ -414,8 +414,8 @@ func bindNewConfig(flags FlagSet, prefix string, val reflect.Value, vars map[str
 			if onlyForSetup {
 				SetBoolAnnotation(flags, flagName, "setup", true)
 			}
-			if field.Tag.Get("user") == "true" {
-				SetBoolAnnotation(flags, flagName, "user", true)
+			if field.Tag.Get("user_service") == "true" {
+				SetBoolAnnotation(flags, flagName, "user_service", true)
 			}
 			if field.Tag.Get("hidden") == "true" {
 				markHidden = true
@@ -519,8 +519,8 @@ func bindNewConfig(flags FlagSet, prefix string, val reflect.Value, vars map[str
 			if onlyForSetup {
 				SetBoolAnnotation(flags, flagName, "setup", true)
 			}
-			if field.Tag.Get("user") == "true" {
-				SetBoolAnnotation(flags, flagName, "user", true)
+			if field.Tag.Get("user_service") == "true" {
+				SetBoolAnnotation(flags, flagName, "user_service", true)
 			}
 
 			markHidden := false

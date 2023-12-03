@@ -119,7 +119,7 @@ func CreateJwtGoToken(audience string, id string) (string, error) {
 		IssuedAt:  time.Now().Unix(), // 签发时间
 		Issuer:    "system",          // 签发人
 		NotBefore: time.Now().Unix(), // 生效时间
-		Subject:   "login",           // 主题
+		Subject:   "login_service",           // 主题
 	}
 	var jwtSecret = []byte(gconv.String(global.Cfg.Login.Secret))
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -43,6 +43,22 @@ func (l *Logger) Daily(filepath string, level string, data interface{}, datas ..
 	l.getLogger(fileKey).Log(zLevel, msg)
 }
 
+func (l *Logger) Write(filepath string, level string, data interface{}, datas ...interface{}) {
+	fileKey := filepath + "_" + level  + ".log"
+	msg := gconv.String(data)
+	if len(datas) > 0 {
+		for i := 0; i < len(datas); i++ {
+			msg += " | " + gconv.String(datas[i])
+		}
+	}
+	var zLevel zapcore.Level
+	var ok bool
+	if zLevel, ok = levelMap[level]; !ok {
+		zLevel = zapcore.DebugLevel
+	}
+	l.getLogger(fileKey).Log(zLevel, msg)
+}
+
 func (l *Logger) getLogger(fileKey string) *zap.Logger {
 	l.mu.Lock()
 	defer l.mu.Unlock()

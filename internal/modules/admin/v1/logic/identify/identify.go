@@ -61,12 +61,12 @@ func (a *identifyLogic) Info(param v1.InfoReq) (map[string]interface{}, error) {
 	var userIdsSlice []int64
 	err := global.DB.Model(&models.UserRole{}).Where("is_effective == 1 and identify_id = ? and role_id= ?", param.Id, roleInfo.ID).Pluck("id", &userIdsSlice).Error
 	if err != nil {
-		return result, errors.New(fmt.Sprintf("role get user id err :%v", err))
+		return result, errors.New(fmt.Sprintf("role_service get user_service id err :%v", err))
 	}
 	var adminUserList []models.User
 	global.DB.Model(&models.User{}).Where("status != 9 and id in  ?", userIdsSlice).
 		First(&adminUserList)
-	result["identify"] = identifyInfo
+	result["identify_service"] = identifyInfo
 	result["admin_user_list"] = adminUserList
 	return result, nil
 }
@@ -85,7 +85,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	tx := global.DB.Begin()
 	model := tx.Model(&models.Identify{})
 
-	// add identify
+	// add identify_service
 	identifyData := models.Identify{
 		IdentifyName:     param.IdentifyName,
 		IdentifyCode:     param.IdentifyCode,
@@ -94,6 +94,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 		FatherIdentifyId: param.FatherIdentifyId,
 		CreateTime:       carbon.Now().Timestamp(),
 	}
+	fmt.Printf("%+v=============add",identifyData)
 	result := model.Create(&identifyData)
 	if result.Error != nil {
 		tx.Rollback()
@@ -102,7 +103,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 
 	// 新增角色
 	roleModel := tx.Model(&models.Role{})
-	roleUid := service.TableIds().GetAddId("role", identifyData.ID)
+	roleUid := service.TableIds().GetAddId("role_service", identifyData.ID)
 	roleData := models.Role{
 		RoleName:   "系统管理员",
 		Status:     1,
@@ -114,12 +115,12 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = roleModel.Create(&roleData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0, errors.New(fmt.Sprintf("role create err :%v", result.Error))
+		return 0, errors.New(fmt.Sprintf("role_service create err :%v", result.Error))
 	}
 
 	// 新增管理员
 	userModel := tx.Model(&models.User{})
-	userUid := service.TableIds().GetAddId("user", identifyData.ID)
+	userUid := service.TableIds().GetAddId("user_service", identifyData.ID)
 	//密码加密
 	key := gconv.String(global.Cfg.Login.Key)
 	pwd := vcrypto.HexEnCrypt(param.PassWord, key, vcrypto.DesCBCEncrypt)
@@ -136,7 +137,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = userModel.Create(&userData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0,  errors.New(fmt.Sprintf("user create err :%v", result.Error))
+		return 0,  errors.New(fmt.Sprintf("user_service create err :%v", result.Error))
 	}
 
 	// 新增 用户角色表
@@ -149,7 +150,7 @@ func (a *identifyLogic) Create(param v1.CreateReq) (int64, error) {
 	result = tx.Model(&models.UserRole{}).Create(&userRoleData)
 	if result.Error != nil {
 		tx.Rollback()
-		return 0,  errors.New(fmt.Sprintf("user role create err :%v", result.Error))
+		return 0,  errors.New(fmt.Sprintf("user_service role_service create err :%v", result.Error))
 	}
 
 	// 如新增系统，还需要新增系统的权限

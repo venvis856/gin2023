@@ -17,7 +17,7 @@ var roleObj RoleInterface
 
 func Role() RoleInterface {
 	if roleObj == nil {
-		handlePanic.Panic("role service panic")
+		handlePanic.Panic("role_service service panic")
 	}
 	return roleObj
 }
